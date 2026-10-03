@@ -46,6 +46,7 @@ COLORS = {
     "Ernest": {"default": "#26231f", "True": "#f4ecd8"},
     "Marcel": {"default": "#efe6d2", "True": "#1d2433"},
     "Jules": {"default": "#f3ecdc", "JULES_CREAM": "#f3ecdc", "JULES_CORAL": "#e8765c", "JULES_INK": "#1c2a24"},
+    "Fernand": {"default": "#4a3b2a", "FERNAND_INK": "#4a3b2a", "FERNAND_PAPER": "#e9dcc0", "FERNAND_SEA": "#3f6f8a", "FERNAND_FOAM": "#d8eaee"},
     "Colette": {"default": "#f1e7d8", "COLETTE_CREAM": "#f1e7d8", "COLETTE_PEACH": "#f2b48f", "COLETTE_DUSK": "#2a2440"},
     "Odette": {"default": "#161618", "ODETTE_INK": "#161618", "ODETTE_IVORY": "#f2efe8", "ODETTE_TEAL": "#2a7f7a"},
 }
@@ -58,7 +59,7 @@ def evaluate(expr, env, colors=None):
     expr = re.sub(r'string::f\("([^"]*)", ([^)]*)\)', lambda m: repr(m.group(1).replace("%d", "{}")) + ".format(" + m.group(2) + ")", expr)
     # Les couleurs ne servent pas à l'aperçu, et les conditions C (a ? b : c) deviennent du Python
     if colors is None:
-        expr = re.sub(r"\b[A-Z]+_(?:CREAM|CORAL|INK|IVORY|TEAL|PEACH|DUSK)\b", "0", expr)
+        expr = re.sub(r"\b[A-Z]+_(?:CREAM|CORAL|INK|IVORY|TEAL|PEACH|DUSK|PAPER|SEA|FOAM)\b", "0", expr)
     m = re.fullmatch(r"\s*(.+?) \? (.+?) : (.+)", expr)
     if m:
         expr = f"({m.group(2)} if {m.group(1)} else {m.group(3)})"
@@ -192,6 +193,32 @@ def draw_display(module, d, k, img):
             d.rectangle([x0, top, x1, bottom], fill=(0x24, 0x33, 0x2c))
             d.rectangle([x0, bottom - (bottom - top) * levels[i], x1, bottom], fill=hexrgb("#e8765c") if i < 6 else hexrgb("#f3ecdc"))
         d.text(((4 + 83.44 - 2) * k, (12 + 0.8) * k), "LOOP / CV", font=font(8), fill=hexrgb("#f3ecdc"), anchor="ra")
+    elif module == "Fernand":
+        x0, y0, w, h = 5 * k, 12 * k, 81.44 * k, 41 * k
+        pad = 3 * k
+        pos = lambda x, y: (x0 + pad + x * (w - 2 * pad), y0 + pad + y * (h - 2 * pad))
+        XS = [0.18, 0.42, 0.78, 0.66, 0.28]; YS = [0.3, 0.72, 0.24, 0.8, 0.52]
+        names = ["C MAJOR 9", "A MINOR 9", "F SUS", "D PENTATONIC", "G FIFTHS"]
+        for i in range(5):
+            a_, b_ = pos(XS[i], YS[i]), pos(XS[(i + 1) % 5], YS[(i + 1) % 5])
+            for t_ in range(0, 20, 2):
+                p0 = (a_[0] + (b_[0] - a_[0]) * t_ / 20, a_[1] + (b_[1] - a_[1]) * t_ / 20)
+                p1 = (a_[0] + (b_[0] - a_[0]) * (t_ + 1) / 20, a_[1] + (b_[1] - a_[1]) * (t_ + 1) / 20)
+                d.line([p0, p1], fill=(0x6d, 0x93, 0xa6), width=int(0.6 * SCALE))
+        a_, b_ = pos(XS[0], YS[0]), pos(XS[1], YS[1])
+        for j in range(9):
+            t_ = 0.35 - 0.015 * j
+            px, py = a_[0] + (b_[0] - a_[0]) * t_ + (j % 3 - 1) * 2 * SCALE, a_[1] + (b_[1] - a_[1]) * t_ - 10 * SCALE * 4 * t_ * (1 - t_) + (j % 2) * 2 * SCALE
+            r = (1.6 if j == 0 else 1.1) * SCALE
+            d.ellipse([px - r, py - r, px + r, py + r], fill=hexrgb("#e9dcc0"))
+        for i in range(5):
+            cx, cy = pos(XS[i], YS[i])
+            r = (5 if i in (0, 1) else 4) * SCALE
+            col = hexrgb("#e9dcc0") if i == 0 else (0xc9, 0xb8, 0x93) if i == 1 else (0x8a, 0x7c, 0x62)
+            d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=col)
+            d.text((cx, cy), str(i + 1), font=font(6), fill=hexrgb("#4a3b2a"), anchor="mm")
+            d.text((cx, cy + 9.5 * SCALE), names[i], font=font(5), fill=(0xc6, 0xd8, 0xdc), anchor="mm")
+        d.text((x0 + 2 * k, y0 + 1.2 * k), "TO 2  ·  35 %", font=font(7), fill=(0xc6, 0xd8, 0xdc), anchor="la")
     elif module == "Colette":
         x0, y0, w, h = 5 * k, 12 * k, 91.6 * k, 45 * k
         pad = 2.5 * k

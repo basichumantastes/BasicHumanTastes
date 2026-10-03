@@ -9,6 +9,7 @@ Modules for [VCV Rack 2](https://vcvrack.com), for playing live and building gen
 | **Jules** | 18 HP | Six linked slopes that become cascading envelopes, polyrhythmic LFOs, slew limiters, chords, plucked notes or FM voices. Twelve modes, a chance control on the trigger cascade, a poly output. |
 | **Odette** | 18 HP | Stereo repeater with eight nested sizes, from plucked strings and flangers to 40-second loops. Tone, blur, spread, bounce, clock sync, reverse, freeze, drift and ducking. |
 | **Colette** | 20 HP | A murmuration: up to 32 voices fly in pitch space, gather, scatter and settle on the notes of a chord. Pull, wind, cohesion and scatter shape the flock; each bird that settles sends a trigger and its note. |
+| **Fernand** | 18 HP | A migration sequencer: a map of islands, each one a chord, and a flock that travels between them. Wind rises on the way, the chord changes half way, the flock settles on arrival. Made to steer Colette, but its outputs work with anything. |
 
 Manuals (PDF): [all modules](docs/Basic-Human-Tastes-manuals.pdf) ·
 [Ernest](docs/Ernest-manual.pdf) · [Marcel](docs/Marcel-manual.pdf) · [Jules](docs/Jules-manual.pdf) · [Odette](docs/Odette-manual.pdf)
@@ -21,7 +22,7 @@ With the [Rack 2 SDK](https://vcvrack.com/manual/Building#Building-Rack-plugins)
 
 ## Tests and tools
 
-    make -C tests run                    # offline test benches (Jules, Odette, Colette), linked to the SDK's libRack
+    make -C tests run                    # offline test benches (Jules, Odette, Colette, Fernand), linked to the SDK's libRack
     python3 tools/preview.py             # panel previews and label overlap check
     python3 tools/preview.py --clean     # clean panel renders for the manuals
     python3 docs/manuals.py              # rebuild the PDF manuals

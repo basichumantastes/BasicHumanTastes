@@ -1,5 +1,6 @@
 #include "plugin.hpp"
 #include "widgets.hpp"
+#include "harmony.hpp"
 
 // Colette : une murmuration. Des oiseaux (2 à 32) volent dans l'espace des hauteurs : leur altitude est
 // leur hauteur, leur place de gauche à droite leur panoramique. Ils se tiennent ensemble (COHESION),
@@ -14,34 +15,13 @@ static const int MAX_BIRDS = 32;
 static const int CONTROL_DIVIDER = 16;
 static const int TAIL = 8;
 
-// Perchoirs : intervalles en demi-tons répétés à chaque octave. HARMONICS suit la série harmonique.
-struct HarmonySet {
-	const char* name;
-	std::vector<float> semitones;
-};
-static const std::vector<HarmonySet> HARMONIES = {
-	{"FIFTHS", {0, 7}},
-	{"MAJOR", {0, 4, 7}},
-	{"MINOR", {0, 3, 7}},
-	{"SUS", {0, 2, 7}},
-	{"MAJOR 9", {0, 2, 4, 7, 11}},
-	{"MINOR 9", {0, 2, 3, 7, 10}},
-	{"PENTATONIC", {0, 2, 4, 7, 9}},
-	{"WHOLE TONE", {0, 2, 4, 6, 8, 10}},
-	{"HARMONICS", {}},
-	{"FREE", {}},
-};
-static const int HARMONY_COUNT = 10;
-static const int HARMONY_HARMONICS = 8;
-static const int HARMONY_FREE = 9;
-
-
 struct Bird {
 	float y = 0.f, x = 0.f;      // hauteur (octaves au-dessus de ROOT), panoramique (-1..1)
 	float vy = 0.f, vx = 0.f;
 	float windY = 0.f, windX = 0.f;
 	bool landed = false;
 	float perch = 0.f;
+	float airborne = 0.f;        // temps de vol obligatoire après un décollage (s)
 	float amp = 0.f;             // volume lissé par BLOOM
 	float breath = 0.f;          // part de souffle (en vol)
 	float phase = 0.f;
@@ -296,6 +276,7 @@ struct Colette : Module {
 				bool perchGone = !perched || std::fabs(nearestPerch(b.perch) - b.perch) > 1e-3f;
 				if (gust || perchGone || random::uniform() < takeOffRate * dt) {
 					b.landed = false;
+					b.airborne = 0.3f + 0.5f * random::uniform();
 					float lift = gust ? 1.2f : 0.5f;
 					b.vy = random::normal() * lift;
 					b.vx = random::normal() * lift * 0.6f;
@@ -306,7 +287,9 @@ struct Colette : Module {
 				}
 			}
 
+			b.airborne = std::max(0.f, b.airborne - dt);
 			if (gust) {
+				b.airborne = std::max(b.airborne, 0.3f + 0.5f * random::uniform());
 				b.vy += random::normal() * 0.8f;
 				b.vx += random::normal() * 0.5f;
 			}
@@ -341,7 +324,7 @@ struct Colette : Module {
 				float p = perch;
 				ay += pull * 14.f * (p - b.y);
 				// Posé : assez près et assez lent
-				if (std::fabs(p - b.y) < 0.015f && std::fabs(b.vy) < 0.12f && pull > 0.05f) {
+				if (b.airborne <= 0.f && std::fabs(p - b.y) < 0.015f && std::fabs(b.vy) < 0.12f && pull > 0.05f) {
 					b.landed = true;
 					b.perch = p;
 					b.y = p;
