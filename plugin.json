@@ -59,6 +59,18 @@
         "Flanger"
       ],
       "manualUrl": "https://github.com/basichumantastes/BasicHumanTastes/blob/main/docs/Odette-manual.pdf"
+    },
+    {
+      "slug": "Colette",
+      "name": "Colette",
+      "description": "A murmuration of up to 32 voices that fly in pitch space, gather, scatter and settle on the notes of a chord: ambient textures that never quite repeat",
+      "tags": [
+        "Oscillator",
+        "Synth voice",
+        "Polyphonic",
+        "Random"
+      ],
+      "manualUrl": ""
     }
   ]
 }

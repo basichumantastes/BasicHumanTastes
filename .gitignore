@@ -9,3 +9,4 @@ tests/test_jules
 tools/preview/
 tests/test_odette
 tests/*.dSYM/
+tests/test_colette

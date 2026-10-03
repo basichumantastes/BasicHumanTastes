@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="101.6mm" height="128.5mm" viewBox="0 0 101.6 128.5">
+  <!-- Colette, 20HP : crépuscule violet, textes crème, accents pêche -->
+  <defs>
+    <linearGradient id="dusk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2440"/>
+      <stop offset="1" stop-color="#3a2f4f"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#14112a"/>
+      <stop offset="1" stop-color="#2b2140"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="101.6" height="128.5" fill="url(#dusk)"/>
+  <!-- Le ciel -->
+  <rect x="5" y="12" width="91.6" height="45" rx="1.5" fill="url(#sky)" stroke="#f2b48f" stroke-width="0.25" stroke-opacity="0.6"/>
+  <!-- Filets pêche entre les sections -->
+  <line x1="4" y1="77" x2="97.6" y2="77" stroke="#f2b48f" stroke-width="0.25" stroke-opacity="0.6"/>
+  <line x1="4" y1="93" x2="97.6" y2="93" stroke="#f2b48f" stroke-width="0.25" stroke-opacity="0.35"/>
+  <!-- Plaque crème des sorties -->
+  <rect x="45.199999999999996" y="107" width="53.0" height="14.6" rx="1.5" fill="#f1e7d8"/>
+</svg>

@@ -46,6 +46,7 @@ COLORS = {
     "Ernest": {"default": "#26231f", "True": "#f4ecd8"},
     "Marcel": {"default": "#efe6d2", "True": "#1d2433"},
     "Jules": {"default": "#f3ecdc", "JULES_CREAM": "#f3ecdc", "JULES_CORAL": "#e8765c", "JULES_INK": "#1c2a24"},
+    "Colette": {"default": "#f1e7d8", "COLETTE_CREAM": "#f1e7d8", "COLETTE_PEACH": "#f2b48f", "COLETTE_DUSK": "#2a2440"},
     "Odette": {"default": "#161618", "ODETTE_INK": "#161618", "ODETTE_IVORY": "#f2efe8", "ODETTE_TEAL": "#2a7f7a"},
 }
 
@@ -57,7 +58,7 @@ def evaluate(expr, env, colors=None):
     expr = re.sub(r'string::f\("([^"]*)", ([^)]*)\)', lambda m: repr(m.group(1).replace("%d", "{}")) + ".format(" + m.group(2) + ")", expr)
     # Les couleurs ne servent pas à l'aperçu, et les conditions C (a ? b : c) deviennent du Python
     if colors is None:
-        expr = re.sub(r"\b[A-Z]+_(?:CREAM|CORAL|INK|IVORY|TEAL)\b", "0", expr)
+        expr = re.sub(r"\b[A-Z]+_(?:CREAM|CORAL|INK|IVORY|TEAL|PEACH|DUSK)\b", "0", expr)
     m = re.fullmatch(r"\s*(.+?) \? (.+?) : (.+)", expr)
     if m:
         expr = f"({m.group(2)} if {m.group(1)} else {m.group(3)})"
@@ -191,6 +192,33 @@ def draw_display(module, d, k, img):
             d.rectangle([x0, top, x1, bottom], fill=(0x24, 0x33, 0x2c))
             d.rectangle([x0, bottom - (bottom - top) * levels[i], x1, bottom], fill=hexrgb("#e8765c") if i < 6 else hexrgb("#f3ecdc"))
         d.text(((4 + 83.44 - 2) * k, (12 + 0.8) * k), "LOOP / CV", font=font(8), fill=hexrgb("#f3ecdc"), anchor="ra")
+    elif module == "Colette":
+        x0, y0, w, h = 5 * k, 12 * k, 91.6 * k, 45 * k
+        pad = 2.5 * k
+        sx = lambda x: x0 + pad + (x + 1) * 0.5 * (w - 2 * pad)
+        sy = lambda y: y0 + h - pad - y / 3 * (h - 2 * pad)
+        for o in range(4):
+            for st in (0, 2, 4, 7, 11):
+                yv = o + st / 12
+                if yv <= 3:
+                    root = st == 0
+                    d.line([x0 + pad, sy(yv), x0 + w - pad, sy(yv)], fill=(0x8a, 0x6c, 0x6a) if root else (0x55, 0x45, 0x55), width=int(0.6 * SCALE))
+        rnd = __import__("random").Random(3)
+        for i in range(16):
+            landed = i % 3 == 0
+            yv = [0, 2/12, 4/12, 7/12, 11/12, 1, 14/12, 16/12, 19/12, 23/12, 2, 26/12][rnd.randrange(12)] if landed else rnd.uniform(0.4, 2.6)
+            xv = rnd.uniform(-0.8, 0.8)
+            if not landed:
+                tail = [(sx(xv - 0.04 * t), sy(yv - 0.03 * t)) for t in range(6)]
+                d.line(tail, fill=(0x6e, 0x66, 0x72), width=int(0.8 * SCALE))
+                r = 1.6 * SCALE
+                d.ellipse([sx(xv) - r, sy(yv) - r, sx(xv) + r, sy(yv) + r], fill=hexrgb("#f1e7d8"))
+            else:
+                r = 4.5 * SCALE
+                d.ellipse([sx(xv) - r, sy(yv) - r, sx(xv) + r, sy(yv) + r], fill=(0x6a, 0x52, 0x58))
+                r = 2.2 * SCALE
+                d.ellipse([sx(xv) - r, sy(yv) - r, sx(xv) + r, sy(yv) + r], fill=hexrgb("#f2b48f"))
+        d.text((x0 + w - pad, y0 + pad * 0.6), "MAJOR 9", font=font(8), fill=hexrgb("#f1e7d8"), anchor="ra")
     elif module == "Odette":
         x0, y0, w, h = 6 * k, 12.5 * k, 79.44 * k, 14 * k
         cell = (w - 4 * k) / 8
