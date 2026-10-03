@@ -71,17 +71,6 @@
         "Random"
       ],
       "manualUrl": ""
-    },
-    {
-      "slug": "Fernand",
-      "name": "Fernand",
-      "description": "A migration sequencer: a map of islands, each one a chord, and a flock that travels between them, with wind on the way and a chord change half way",
-      "tags": [
-        "Sequencer",
-        "Random",
-        "Clock modulator"
-      ],
-      "manualUrl": ""
     }
   ]
 }

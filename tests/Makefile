@@ -1,7 +1,7 @@
 # Bancs d'essai hors de Rack, liés à la libRack du SDK
 RACK_DIR ?= ../../Rack-SDK
 FLAGS = -std=c++11 -O2 -I$(RACK_DIR)/include -I$(RACK_DIR)/dep/include -Wno-\#warnings
-TESTS = test_jules test_odette test_colette test_fernand
+TESTS = test_jules test_odette test_colette
 
 all: $(TESTS)
 
