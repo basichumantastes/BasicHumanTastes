@@ -166,7 +166,7 @@ struct Colette : Module {
 		configButton(GUST_PARAM, "Gust (every bird takes off)");
 		configSwitch(FREEZE_PARAM, 0.f, 1.f, 0.f, "Freeze (the flock holds still)", {"Off", "On"});
 		configInput(VOCT_INPUT, "Root (1V/oct)");
-		configInput(HARMONY_INPUT, "Harmony CV (1 V per harmony)");
+		configInput(HARMONY_INPUT, "Harmony CV (1 V per harmony; replaces the knob when patched)");
 		configInput(PULL_INPUT, "Pull CV (10 V = full range)");
 		configInput(WIND_INPUT, "Wind CV (10 V = full range)");
 		configInput(COHESION_INPUT, "Cohesion CV (10 V = full range)");
@@ -209,8 +209,10 @@ struct Colette : Module {
 		return clamp(m->params[param].getValue() + m->inputs[input].getVoltage() / 10.f, 0.f, 1.f);
 	}
 
+	// Branchée, l'entrée HARMONY choisit seule l'harmonie (1 V par harmonie) : additionnée au bouton,
+	// elle débordait vite sur la dernière position (FREE)
 	int harmonyIndex() {
-		float h = params[HARMONY_PARAM].getValue() + inputs[HARMONY_INPUT].getVoltage();
+		float h = inputs[HARMONY_INPUT].isConnected() ? inputs[HARMONY_INPUT].getVoltage() : params[HARMONY_PARAM].getValue();
 		return clamp((int) std::round(h), 0, HARMONY_COUNT - 1);
 	}
 

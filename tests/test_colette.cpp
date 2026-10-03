@@ -131,6 +131,18 @@ int main(int argc, char** argv) {
 		check(ok && b.landed() > 0, "aucun oiseau resté sur la tierce majeure");
 	}
 
+	std::printf("HARMONY branchée : la CV choisit seule, quel que soit le bouton\n");
+	{
+		Bench b;
+		b.set(Colette::HARMONY_PARAM, 4.f);
+		b.patch(Colette::HARMONY_INPUT, 6.f);
+		for (int i = 0; i < 64; i++) b.step();
+		check(b.m.harmonyIndex() == 6, "bouton sur 4, CV à 6 V : PENTATONIC, pas FREE");
+		b.patch(Colette::HARMONY_INPUT, 2.f);
+		for (int i = 0; i < 64; i++) b.step();
+		check(b.m.harmonyIndex() == 2, "CV à 2 V : MINOR");
+	}
+
 	std::printf("FREEZE : la nuée ne bouge plus\n");
 	{
 		Bench b;
