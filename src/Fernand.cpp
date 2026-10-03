@@ -367,9 +367,12 @@ struct Fernand : Module {
 		const Island& to = islands[destination];
 		const Island& chord = traveling && progress >= 0.5f ? to : from;
 		float weather = clamp(params[WEATHER_PARAM].getValue() + inputs[WEATHER_INPUT].getVoltage() / 10.f, 0.f, 1.f);
-		float arc = traveling ? std::sin(M_PI * progress) : 0.f;
-		float wind = clamp(0.05f + 0.15f * weather + (0.25f + 0.7f * weather) * arc, 0.f, 1.f);
-		float pull = clamp(0.85f - (0.55f + 0.3f * weather) * arc, 0.f, 1.f);
+		// Le voyage : le vent se lève vite au départ (les premiers 10 %), tient pendant la traversée,
+		// puis retombe sur le dernier quart, quand la nuée approche de l'île et se pose
+		auto smooth = [](float e0, float e1, float x) { float t = clamp((x - e0) / (e1 - e0), 0.f, 1.f); return t * t * (3.f - 2.f * t); };
+		float arc = traveling ? smooth(0.f, 0.1f, progress) * (1.f - smooth(0.72f, 1.f, progress)) : 0.f;
+		float wind = clamp(0.03f + 0.07f * weather + (0.4f + 0.55f * weather) * arc, 0.f, 1.f);
+		float pull = clamp(0.85f - 0.8f * arc, 0.f, 1.f);
 
 		outputs[HARMONY_OUTPUT].setVoltage((float) chord.harmony);
 		outputs[ROOT_OUTPUT].setVoltage(chord.root / 12.f);

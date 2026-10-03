@@ -22,6 +22,7 @@ struct Bird {
 	bool landed = false;
 	float perch = 0.f;
 	float airborne = 0.f;        // temps de vol obligatoire après un décollage (s)
+	bool gliding = false;        // glisse vers une note voisine après un changement d'accord
 	float amp = 0.f;             // volume lissé par BLOOM
 	float breath = 0.f;          // part de souffle (en vol)
 	float phase = 0.f;
@@ -155,7 +156,7 @@ struct Colette : Module {
 		for (const HarmonySet& h : HARMONIES)
 			names.push_back(h.name);
 		configSwitch(HARMONY_PARAM, 0.f, HARMONY_COUNT - 1, 4.f, "Harmony (where the birds can settle)", names);
-		configParam(ROOT_PARAM, -12.f, 12.f, 0.f, "Root (semitones from C2)", " st");
+		configParam(ROOT_PARAM, -12.f, 12.f, 0.f, "Root (key of the chord, in semitones; the birds glide to the nearest new notes)", " st");
 		paramQuantities[ROOT_PARAM]->snapEnabled = true;
 		configParam(RANGE_PARAM, 1.f, 5.f, 3.f, "Range (octaves of sky)", " oct");
 		paramQuantities[RANGE_PARAM]->snapEnabled = true;
@@ -166,7 +167,7 @@ struct Colette : Module {
 		configParam(SPACE_PARAM, 0.f, 1.f, 0.5f, "Space", "%", 0.f, 100.f);
 		configButton(GUST_PARAM, "Gust (every bird takes off)");
 		configSwitch(FREEZE_PARAM, 0.f, 1.f, 0.f, "Freeze (the flock holds still)", {"Off", "On"});
-		configInput(VOCT_INPUT, "Root (1V/oct)");
+		configInput(VOCT_INPUT, "Root (1V/oct; moves the chord, the birds glide to it)");
 		configInput(HARMONY_INPUT, "Harmony CV (1 V per harmony; replaces the knob when patched)");
 		configInput(PULL_INPUT, "Pull CV (10 V = full range)");
 		configInput(WIND_INPUT, "Wind CV (10 V = full range)");
@@ -217,21 +218,30 @@ struct Colette : Module {
 		return clamp((int) std::round(h), 0, HARMONY_COUNT - 1);
 	}
 
-	void buildPerches(int harmony, int range) {
-		int key = harmony * 10 + range;
+	// Les oiseaux gardent leur hauteur réelle (en octaves au-dessus de C2) : quand la fondamentale change,
+	// ce sont les perchoirs qui se déplacent, et chaque oiseau glisse vers la note la plus proche du nouvel
+	// accord. Les notes communes restent, les autres bougent d'un ton ou d'un demi-ton : une vraie conduite
+	// des voix, au lieu de transposer toute la nuée d'un coup.
+	void buildPerches(int harmony, int range, float rootPitch) {
+		float rootClass = rootPitch - std::floor(rootPitch);
+		int key = harmony * 10 + range + 100 * (int) std::round(rootClass * 1200.f);
 		if (key == perchKey)
 			return;
 		perchKey = key;
 		int n = 0;
 		if (harmony == HARMONY_HARMONICS) {
-			for (int k = 1; k <= (1 << range) && n < MAX_PERCHES; k++)
-				perches[n++] = std::log2((float) k);
+			for (int k = 1; n < MAX_PERCHES; k++) {
+				float y = rootClass + std::log2((float) k);
+				if (y > range + 1e-4f)
+					break;
+				perches[n++] = y;
+			}
 		}
 		else if (harmony != HARMONY_FREE) {
-			for (int o = 0; o <= range; o++)
+			for (int o = -1; o <= range; o++)
 				for (float st : HARMONIES[harmony].semitones) {
-					float y = o + st / 12.f;
-					if (y <= range + 1e-4f && n < MAX_PERCHES)
+					float y = rootClass + o + st / 12.f;
+					if (y >= -1e-4f && y <= range + 1e-4f && n < MAX_PERCHES)
 						perches[n++] = y;
 				}
 		}
@@ -293,9 +303,16 @@ struct Colette : Module {
 					}
 				}
 				float rate = takeOffRate + restless * (1.f - pull);
-				if (gust || perchGone || random::uniform() < rate * dt) {
+				if (perchGone && !gust) {
+					// L'accord a changé sous lui : il glisse vers la note voisine, sans coup d'aile
 					b.landed = false;
-					b.airborne = 0.3f + 0.5f * random::uniform();
+					b.airborne = 0.f;
+					b.vy = b.vx = 0.f;
+					b.gliding = true;
+				}
+				else if (gust || random::uniform() < rate * dt) {
+					b.landed = false;
+					b.airborne = gust ? 1.f + 1.5f * random::uniform() : 0.3f + 0.5f * random::uniform();
 					float lift = gust ? 1.2f : 0.5f;
 					b.vy = random::normal() * lift;
 					b.vx = random::normal() * lift * 0.6f;
@@ -307,8 +324,11 @@ struct Colette : Module {
 			}
 
 			b.airborne = std::max(0.f, b.airborne - dt);
+			// Une glissade s'arrête sur une rafale, ou s'il n'y a plus de note où se poser
+			if (gust || !perched)
+				b.gliding = false;
 			if (gust) {
-				b.airborne = std::max(b.airborne, 0.3f + 0.5f * random::uniform());
+				b.airborne = std::max(b.airborne, 1.f + 1.5f * random::uniform());
 				b.vy += random::normal() * 0.8f;
 				b.vx += random::normal() * 0.5f;
 			}
@@ -316,19 +336,23 @@ struct Colette : Module {
 			// sans ça, la cohésion retient les oiseaux en équilibre juste à côté des notes
 			float perch = perched ? nearestPerch(b.y) : b.y;
 			float proximity = perched ? clamp(1.f - std::fabs(perch - b.y) / 0.06f, 0.f, 1.f) : 0.f;
-			float others = 1.f - 0.9f * pull * proximity;
+			float others = b.gliding ? 0.f : 1.f - 0.9f * pull * proximity * (1.f - wind);
 			float ay = 0.f, ax = 0.f;
 			// Cohésion et alignement
 			ay += cohesion * 1.6f * (cy - b.y) + cohesion * 0.8f * (avy - b.vy);
 			ax += cohesion * 1.2f * (cx - b.x) + cohesion * 0.8f * (avx - b.vx);
 			// Séparation : on évite les voisins trop proches (des unissons qui battent)
-			const float radius = 0.1f;
+			const float radius = 0.07f;
 			for (int j = 0; j < count; j++) {
 				if (j == i)
 					continue;
 				float dy = b.y - birds[j].y, dx = (b.x - birds[j].x) * 0.25f;
 				float d2 = dy * dy + dx * dx;
 				if (d2 < radius * radius && d2 > 1e-8f) {
+					// Un voisin posé ne repousse pas : on peut se poser sur la même note que lui (unisson qui
+					// chorusse) ; c'est SCATTER qui éclaircit ensuite les notes trop chargées
+					if (birds[j].landed)
+						continue;
 					float push = scatter * 0.02f / d2;
 					push = std::min(push, 6.f);
 					float d = std::sqrt(d2);
@@ -341,10 +365,12 @@ struct Colette : Module {
 			// Perchoir le plus proche
 			if (perched && pull > 0.f) {
 				float p = perch;
-				ay += pull * 14.f * (p - b.y);
+				ay += (b.gliding ? std::max(pull, 0.5f) * 30.f : pull * 14.f) * (p - b.y);
 				// Posé : assez près et assez lent
-				if (b.airborne <= 0.f && std::fabs(p - b.y) < 0.015f && std::fabs(b.vy) < 0.12f && pull > 0.05f) {
+				bool calm = pull > 0.05f && pull > 1.2f * wind;
+				if (calm && b.airborne <= 0.f && std::fabs(p - b.y) < 0.02f && std::fabs(b.vy) < 0.15f) {
 					b.landed = true;
+					b.gliding = false;
 					b.perch = p;
 					b.y = p;
 					b.vy = b.vx = 0.f;
@@ -409,10 +435,12 @@ struct Colette : Module {
 			gustLight.trigger(0.15f);
 		}
 
+		float rootPitch = params[ROOT_PARAM].getValue() / 12.f + inputs[VOCT_INPUT].getVoltage();
+
 		// Le vol
 		if (++counter >= CONTROL_DIVIDER) {
 			counter = 0;
-			buildPerches(harmony, (int) range);
+			buildPerches(harmony, (int) range, rootPitch);
 			// Les oiseaux qui viennent d'arriver partent d'un endroit au hasard
 			for (int i = activeBirds; i < count; i++) {
 				birds[i].landed = false;
@@ -441,8 +469,7 @@ struct Colette : Module {
 		}
 
 		// Les voix
-		float rootPitch = params[ROOT_PARAM].getValue() / 12.f + inputs[VOCT_INPUT].getVoltage();
-		float rootFreq = dsp::FREQ_C4 * std::pow(2.f, rootPitch - 2.f);
+		const float baseFreq = dsp::FREQ_C4 / 4.f;  // C2 : le bas du ciel
 		float bloomTime = 0.02f * std::pow(150.f, bloom);
 		float ampCoeff = 1.f - std::exp(-dt / bloomTime);
 		float left = 0.f, right = 0.f;
@@ -453,9 +480,9 @@ struct Colette : Module {
 			if (!active && b.amp < 1e-4f)
 				continue;
 			float speed = std::fabs(b.vy) + 0.5f * std::fabs(b.vx);
-			float targetAmp = !active ? 0.f : b.landed ? 1.f : 0.45f + 0.55f * std::exp(-speed * 3.f);
+			float targetAmp = !active ? 0.f : (b.landed || b.gliding) ? 1.f : 0.3f + 0.7f * std::exp(-speed * 4.f);
 			b.amp += (targetAmp - b.amp) * ampCoeff;
-			float targetBreath = b.landed ? 0.f : clamp(speed * 2.5f, 0.f, 1.f) * (0.3f + 0.7f * timbre);
+			float targetBreath = (b.landed || b.gliding) ? 0.f : clamp(speed * 3.5f, 0.f, 1.f) * (0.45f + 0.55f * timbre);
 			b.breath += (targetBreath - b.breath) * (1.f - std::exp(-dt / 0.05f));
 
 			// Un oiseau posé chante avec un léger vibrato, propre à lui
@@ -463,7 +490,7 @@ struct Colette : Module {
 			b.vibratoPhase -= std::floor(b.vibratoPhase);
 			// Le vent fait aussi trembler les oiseaux posés : le vibrato s'élargit et devient irrégulier
 			float vibrato = b.landed ? (0.0025f + 0.006f * currentWind) * std::sin(2.f * M_PI * b.vibratoPhase) + 0.003f * currentWind * b.windY : 0.f;
-			float freq = std::min(rootFreq * dsp::exp2_taylor5(b.y + vibrato), nyquist);
+			float freq = std::min(baseFreq * dsp::exp2_taylor5(b.y + vibrato), nyquist);
 			b.phase += freq * dt;
 			b.phase -= std::floor(b.phase);
 
@@ -508,7 +535,7 @@ struct Colette : Module {
 
 		bool landing = landPulse.process(dt);
 		outputs[LAND_OUTPUT].setVoltage(landing ? 10.f : 0.f);
-		outputs[NOTE_OUTPUT].setVoltage(rootPitch - 2.f + note);
+		outputs[NOTE_OUTPUT].setVoltage(note - 2.f);
 
 		lights[GUST_LIGHT].setBrightnessSmooth(gustLight.process(dt), dt);
 		lights[FREEZE_LIGHT].setBrightness(frozen);

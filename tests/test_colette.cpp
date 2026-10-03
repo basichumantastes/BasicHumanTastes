@@ -131,6 +131,34 @@ int main(int argc, char** argv) {
 		check(b.m.currentWind == 1.f, "le vent agit aussitôt, même nuée figée");
 	}
 
+	std::printf("Conduite des voix : de do majeur à sol majeur, chaque oiseau glisse vers la note voisine\n");
+	{
+		Bench b;
+		b.set(Colette::PULL_PARAM, 1.f);
+		b.set(Colette::WIND_PARAM, 0.f);
+		b.set(Colette::HARMONY_PARAM, 1.f);  // MAJOR
+		b.run(30.f);
+		float before[MAX_BIRDS]; bool was[MAX_BIRDS];
+		for (int i = 0; i < b.m.activeBirds; i++) { before[i] = b.m.birds[i].y; was[i] = b.m.birds[i].landed; }
+		b.set(Colette::ROOT_PARAM, 7.f);  // sol
+		b.run(3.f);
+		float worst = 0.f; int stayed = 0, common = 0, moved = 0;
+		for (int i = 0; i < b.m.activeBirds; i++) {
+			if (!was[i] || !b.m.birds[i].landed) continue;
+			float st = std::fabs(b.m.birds[i].y - before[i]) * 12.f;
+			worst = std::max(worst, st);
+			float pc = std::fmod(before[i] * 12.f + 1200.f, 12.f);
+			bool isCommon = std::fabs(pc - 7.f) < 0.01f;  // sol est dans les deux accords
+			common += isCommon; stayed += isCommon && st < 0.01f; moved++;
+		}
+		std::printf("    %d oiseaux suivis, plus grand déplacement %.2f demi-tons, %d/%d sols restés en place\n", moved, worst, stayed, common);
+		check(moved > 0 && worst <= 2.01f, "aucun oiseau ne bouge de plus d'un ton");
+		check(stayed == common, "les notes communes ne bougent pas");
+		float note = b.m.outputs[Colette::NOTE_OUTPUT].getVoltage() + 2.f;
+		float pcNote = std::fmod(note * 12.f + 1200.f, 12.f);
+		check(std::fabs(pcNote - 7.f) < 0.01f || std::fabs(pcNote - 11.f) < 0.01f || std::fabs(pcNote - 2.f) < 0.01f, "NOTE est une note de sol majeur");
+	}
+
 	std::printf("FREE : sans perchoirs, personne ne se pose\n");
 	{
 		Bench b;

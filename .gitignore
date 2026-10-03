@@ -11,3 +11,4 @@ tests/test_odette
 tests/*.dSYM/
 tests/test_colette
 tests/test_fernand
+tests/probe_*
