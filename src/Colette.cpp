@@ -140,6 +140,7 @@ struct Colette : Module {
 	dsp::PulseGenerator landPulse, gustLight;
 	float note = 0.f;
 	int activeBirds = 12;
+	float currentWind = 0.f;
 	// Pour l'afficheur (copié à chaque pas de contrôle)
 	int displayHarmony = 4;
 	float displayRange = 3.f;
@@ -274,9 +275,25 @@ struct Colette : Module {
 			b.windX += (random::normal() - b.windX) * relax;
 
 			if (b.landed) {
-				// Il décolle sur une rafale, au hasard avec le vent, ou si son perchoir a disparu
+				// Il décolle sur une rafale, si son perchoir a disparu, ou au hasard. Les quatre forces agissent
+				// aussi sur les oiseaux posés, pour que les boutons répondent même quand la nuée est posée :
+				// - WIND : plus il souffle, plus les décollages sont fréquents ;
+				// - PULL : la prise sur le perchoir ; plus il est bas, plus l'oiseau se détache facilement ;
+				// - COHESION : un oiseau posé loin du reste de la nuée part la rejoindre ;
+				// - SCATTER : un oiseau posé trop près d'un voisin s'écarte.
 				bool perchGone = !perched || std::fabs(nearestPerch(b.perch) - b.perch) > 1e-3f;
-				if (gust || perchGone || random::uniform() < takeOffRate * dt) {
+				// PULL à fond : la prise l'emporte sur le groupe et les voisins, seuls le vent et les rafales font partir
+				float loosen = 1.f - pull;
+				float restless = 0.6f * loosen * loosen * loosen;
+				restless += cohesion * 0.15f * std::max(0.f, std::fabs(cy - b.y) - 1.f);
+				for (int j = 0; j < count; j++) {
+					if (j != i && std::fabs(birds[j].y - b.y) < 0.09f) {
+						restless += scatter * scatter * 0.25f;
+						break;
+					}
+				}
+				float rate = takeOffRate + restless * (1.f - pull);
+				if (gust || perchGone || random::uniform() < rate * dt) {
 					b.landed = false;
 					b.airborne = 0.3f + 0.5f * random::uniform();
 					float lift = gust ? 1.2f : 0.5f;
@@ -383,6 +400,7 @@ struct Colette : Module {
 		float bloom = params[BLOOM_PARAM].getValue();
 		float spaceAmount = params[SPACE_PARAM].getValue();
 		bool frozen = params[FREEZE_PARAM].getValue() > 0.5f || inputs[FREEZE_INPUT].getVoltage() >= 1.f;
+		currentWind = wind;
 
 		bool gust = gustButton.process(params[GUST_PARAM].getValue() > 0.f);
 		gust |= gustInput.process(inputs[GUST_INPUT].getVoltage(), 0.1f, 1.f);
@@ -443,7 +461,8 @@ struct Colette : Module {
 			// Un oiseau posé chante avec un léger vibrato, propre à lui
 			b.vibratoPhase += b.vibratoRate * dt;
 			b.vibratoPhase -= std::floor(b.vibratoPhase);
-			float vibrato = b.landed ? 0.0025f * std::sin(2.f * M_PI * b.vibratoPhase) : 0.f;
+			// Le vent fait aussi trembler les oiseaux posés : le vibrato s'élargit et devient irrégulier
+			float vibrato = b.landed ? (0.0025f + 0.006f * currentWind) * std::sin(2.f * M_PI * b.vibratoPhase) + 0.003f * currentWind * b.windY : 0.f;
 			float freq = std::min(rootFreq * dsp::exp2_taylor5(b.y + vibrato), nyquist);
 			b.phase += freq * dt;
 			b.phase -= std::floor(b.phase);

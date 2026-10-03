@@ -103,6 +103,34 @@ int main(int argc, char** argv) {
 		check(b.landed() == 0, "plus aucun oiseau posé");
 	}
 
+	std::printf("Nuée posée : baisser PULL fait repartir les oiseaux tout de suite\n");
+	{
+		Bench b;
+		b.set(Colette::PULL_PARAM, 1.f);
+		b.set(Colette::WIND_PARAM, 0.f);
+		b.run(30.f);
+		int before = b.landed();
+		b.set(Colette::PULL_PARAM, 0.f);
+		b.run(3.f);
+		std::printf("    %d posés, puis %d posés 3 s après avoir mis PULL à zéro\n", before, b.landed());
+		check(b.landed() <= before / 3, "la plupart repartent en quelques secondes");
+	}
+
+	std::printf("Nuée posée : WIND fait trembler les notes avant même de faire décoller\n");
+	{
+		Bench b;
+		b.set(Colette::PULL_PARAM, 1.f);
+		b.set(Colette::WIND_PARAM, 0.f);
+		b.set(Colette::FREEZE_PARAM, 0.f);
+		b.run(30.f);
+		b.set(Colette::FREEZE_PARAM, 1.f);  // les positions ne bougent plus : seul le tremblement change
+		b.run(0.5f);
+		check(b.m.currentWind == 0.f, "vent nul enregistré");
+		b.set(Colette::WIND_PARAM, 1.f);
+		b.run(0.1f);
+		check(b.m.currentWind == 1.f, "le vent agit aussitôt, même nuée figée");
+	}
+
 	std::printf("FREE : sans perchoirs, personne ne se pose\n");
 	{
 		Bench b;
