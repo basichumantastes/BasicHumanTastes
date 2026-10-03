@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="91.44mm" height="128.5mm" viewBox="0 0 91.44 128.5">
+  <!-- Jules, 18HP : vert forêt, textes crème, accents corail (les ajouts Basic Human Tastes) -->
+  <rect x="0" y="0" width="91.44" height="128.5" fill="#22352c"/>
+  <!-- Fenêtre de l'afficheur -->
+  <rect x="4" y="12" width="83.44" height="19" rx="1.5" fill="#16231d" stroke="#e8765c" stroke-width="0.25"/>
+  <!-- Colonnes discrètes qui relient barre, CV, trigger et sortie de chaque pente -->
+  <g fill="#2a4136">
+    <rect x="4.5" y="76.5" width="9" height="28" rx="1.2"/>
+    <rect x="16.74" y="76.5" width="9" height="28" rx="1.2"/>
+    <rect x="28.98" y="76.5" width="9" height="28" rx="1.2"/>
+    <rect x="41.22" y="76.5" width="9" height="28" rx="1.2"/>
+    <rect x="53.46" y="76.5" width="9" height="28" rx="1.2"/>
+    <rect x="65.7" y="76.5" width="9" height="28" rx="1.2"/>
+    <rect x="77.94" y="76.5" width="9" height="12" rx="1.2"/>
+  </g>
+  <!-- Filets corail entre les sections -->
+  <line x1="4" y1="57.5" x2="87.44" y2="57.5" stroke="#e8765c" stroke-width="0.25" opacity="0.7"/>
+  <line x1="4" y1="76" x2="87.44" y2="76" stroke="#e8765c" stroke-width="0.25" opacity="0.7"/>
+  <!-- Plaque crème des sorties (et de POLY) -->
+  <rect x="3.5" y="106" width="84.44" height="15.2" rx="1.5" fill="#f3ecdc"/>
+  <rect x="77.44" y="90.5" width="10" height="15.5" rx="1.5" fill="#f3ecdc"/>
+</svg>

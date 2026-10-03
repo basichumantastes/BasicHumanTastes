@@ -1,0 +1,30 @@
+# Basic Human Tastes
+
+Four modules for [VCV Rack 2](https://vcvrack.com), for playing live and building generative patches.
+
+| Module | Width | What it is |
+|---|---|---|
+| **Ernest** | 12 HP | Percussion oscillator with six ways to bend its pitch: kicks, toms, snares, zaps, metallic pings. Decay, bass boost with drive, ring modulation. |
+| **Marcel** | 12 HP | 8-bit looper / delay with a variable memory clock that slowly forgets: erode, tone, freeze, reverse, reset, and a ring that shows the memory. |
+| **Jules** | 18 HP | Six linked slopes that become cascading envelopes, polyrhythmic LFOs, slew limiters, chords, plucked notes or FM voices. Twelve modes, a chance control on the trigger cascade, a poly output. |
+| **Odette** | 18 HP | Stereo repeater with eight nested sizes, from plucked strings and flangers to 40-second loops. Tone, blur, spread, bounce, clock sync, reverse, freeze, drift and ducking. |
+
+Manuals (PDF): [all modules](docs/Basic-Human-Tastes-manuals.pdf) ·
+[Ernest](docs/Ernest-manual.pdf) · [Marcel](docs/Marcel-manual.pdf) · [Jules](docs/Jules-manual.pdf) · [Odette](docs/Odette-manual.pdf)
+
+## Building
+
+With the [Rack 2 SDK](https://vcvrack.com/manual/Building#Building-Rack-plugins) next to this folder (`../Rack-SDK`), or pointed to by `RACK_DIR`:
+
+    make install
+
+## Tests and tools
+
+    make -C tests run                    # offline test benches (Jules, Odette), linked to the SDK's libRack
+    python3 tools/preview.py             # panel previews and label overlap check
+    python3 tools/preview.py --clean     # clean panel renders for the manuals
+    python3 docs/manuals.py              # rebuild the PDF manuals
+
+## License
+
+Code: GPL-3.0-or-later (`LICENSE`). Panel graphics, names and manuals: CC BY-NC-ND 4.0 (`LICENSE-graphics.md`).

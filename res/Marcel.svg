@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="60.96mm" height="128.5mm" viewBox="0 0 60.96 128.5">
+  <!-- Marcel, 12HP : encre bleu nuit, textes crème, accents dorés -->
+  <rect x="0" y="0" width="60.96" height="128.5" fill="#1d2433"/>
+  <!-- Disque sombre sous l'anneau de mémoire -->
+  <circle cx="30.48" cy="29" r="15.5" fill="#151a26"/>
+  <circle cx="30.48" cy="29" r="15.5" fill="none" stroke="#c49a52" stroke-width="0.25"/>
+  <!-- Filets dorés entre les sections -->
+  <line x1="4" y1="79.5" x2="56.96" y2="79.5" stroke="#c49a52" stroke-width="0.25"/>
+  <line x1="4" y1="109" x2="56.96" y2="109" stroke="#c49a52" stroke-width="0.25" opacity="0.5"/>
+  <!-- Accolades des deux paires de VCA -->
+  <path d="M5,96.2 L5,95.2 L27.3,95.2 L27.3,96.2" fill="none" stroke="#e8dcc0" stroke-width="0.2" opacity="0.6"/>
+  <path d="M33.6,96.2 L33.6,95.2 L56,95.2 L56,96.2" fill="none" stroke="#e8dcc0" stroke-width="0.2" opacity="0.6"/>
+  <!-- Petite plaque crème de la sortie EOC -->
+  <rect x="48.8" y="30.3" width="10.4" height="14.4" rx="1.5" fill="#e8dcc0"/>
+  <!-- Plaque crème des sorties -->
+  <rect x="31.2" y="109.6" width="27.4" height="12.6" rx="1.5" fill="#e8dcc0"/>
+  <!-- patina:start (généré par tools/patina.py, ne pas éditer à la main) -->
+  <defs>
+    <radialGradient id="patina-vignette" cx="0.5" cy="0.45" r="0.75">
+      <stop offset="0.55" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.077"/>
+    </radialGradient>
+    <radialGradient id="patina-stain">
+      <stop offset="0" stop-color="#b08a4a" stop-opacity="0.100"/>
+      <stop offset="1" stop-color="#b08a4a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="patina-rub">
+      <stop offset="0" stop-color="#f2e6cc" stop-opacity="0.100"/>
+      <stop offset="1" stop-color="#f2e6cc" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect x="0" y="0" width="60.96" height="128.5" fill="url(#patina-vignette)"/>
+  <circle cx="9.20" cy="83.65" r="13.89" fill="url(#patina-stain)"/>
+  <circle cx="32.67" cy="46.99" r="10.87" fill="url(#patina-stain)"/>
+  <circle cx="7.62" cy="2.54" r="4.5" fill="url(#patina-rub)"/>
+  <circle cx="7.62" cy="125.96" r="4.5" fill="url(#patina-rub)"/>
+  <circle cx="53.34" cy="2.54" r="4.5" fill="url(#patina-rub)"/>
+  <circle cx="53.34" cy="125.96" r="4.5" fill="url(#patina-rub)"/>
+  <rect x="0.35" y="0.35" width="60.26" height="127.80" rx="0.6" fill="none" stroke="#f2e6cc" stroke-opacity="0.100" stroke-width="0.7"/>
+  <g fill="none">
+    <path d="M4.42,65.18 Q4.23,66.06 4.69,66.94" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.071" stroke-opacity="0.063"/>
+    <path d="M8.30,29.79 Q8.45,32.89 7.88,35.98" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.079" stroke-opacity="0.046"/>
+    <path d="M58.56,7.80 Q58.49,11.76 59.04,15.72" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.065" stroke-opacity="0.063"/>
+    <path d="M11.66,74.41 Q10.82,77.47 10.18,80.53" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.077" stroke-opacity="0.033"/>
+    <path d="M4.51,27.64 Q5.68,30.75 6.72,33.87" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.073" stroke-opacity="0.042"/>
+    <path d="M47.84,89.02 Q47.62,90.67 47.28,92.31" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.076" stroke-opacity="0.065"/>
+    <path d="M44.01,37.85 Q42.76,42.03 41.10,46.21" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.058" stroke-opacity="0.050"/>
+    <path d="M3.31,85.19 Q2.28,88.64 1.13,92.09" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.094" stroke-opacity="0.043"/>
+    <path d="M41.99,76.00 Q44.46,78.03 46.21,80.06" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.074" stroke-opacity="0.057"/>
+    <path d="M4.58,89.34 Q4.26,92.43 3.15,95.53" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.091" stroke-opacity="0.041"/>
+    <path d="M23.75,85.25 Q23.65,86.05 24.17,86.86" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.053" stroke-opacity="0.061"/>
+    <path d="M8.63,32.83 Q8.78,35.04 8.35,37.25" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.054" stroke-opacity="0.048"/>
+    <path d="M33.39,111.98 Q32.45,115.70 31.64,119.42" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.068" stroke-opacity="0.065"/>
+    <path d="M57.47,20.79 Q57.62,22.15 58.21,23.51" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.062" stroke-opacity="0.049"/>
+    <path d="M35.73,34.71 Q36.06,35.43 36.28,36.14" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.098" stroke-opacity="0.058"/>
+    <path d="M31.39,78.89 Q30.37,82.11 30.06,85.33" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.095" stroke-opacity="0.061"/>
+    <path d="M52.56,101.34 Q53.03,103.53 53.29,105.72" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.053" stroke-opacity="0.033"/>
+    <path d="M13.31,22.21 Q12.71,24.22 12.82,26.23" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.050" stroke-opacity="0.036"/>
+    <path d="M6.98,47.27 Q6.35,48.04 6.29,48.81" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.063" stroke-opacity="0.044"/>
+    <path d="M22.47,17.29 Q24.50,20.87 25.73,24.45" stroke="#f2e6cc" stroke-linecap="round" stroke-width="0.073" stroke-opacity="0.049"/>
+  </g>
+  <circle cx="6.23" cy="44.03" r="0.066" fill="#f2e6cc" fill-opacity="0.196"/>
+  <circle cx="1.41" cy="122.20" r="0.093" fill="#f2e6cc" fill-opacity="0.101"/>
+  <circle cx="1.65" cy="67.86" r="0.138" fill="#f2e6cc" fill-opacity="0.201"/>
+  <circle cx="15.92" cy="47.12" r="0.057" fill="#000000" fill-opacity="0.188"/>
+  <circle cx="47.49" cy="42.36" r="0.062" fill="#f2e6cc" fill-opacity="0.194"/>
+  <circle cx="51.98" cy="103.58" r="0.122" fill="#000000" fill-opacity="0.184"/>
+  <circle cx="31.56" cy="45.69" r="0.043" fill="#f2e6cc" fill-opacity="0.084"/>
+  <circle cx="15.80" cy="88.99" r="0.136" fill="#f2e6cc" fill-opacity="0.143"/>
+  <circle cx="60.23" cy="122.72" r="0.076" fill="#000000" fill-opacity="0.111"/>
+  <circle cx="11.99" cy="26.26" r="0.102" fill="#f2e6cc" fill-opacity="0.206"/>
+  <circle cx="29.23" cy="83.91" r="0.120" fill="#000000" fill-opacity="0.092"/>
+  <circle cx="55.46" cy="100.53" r="0.115" fill="#000000" fill-opacity="0.147"/>
+  <circle cx="48.11" cy="42.73" r="0.120" fill="#f2e6cc" fill-opacity="0.216"/>
+  <circle cx="24.47" cy="121.66" r="0.112" fill="#f2e6cc" fill-opacity="0.104"/>
+  <circle cx="9.21" cy="116.27" r="0.121" fill="#f2e6cc" fill-opacity="0.100"/>
+  <circle cx="59.76" cy="84.46" r="0.075" fill="#000000" fill-opacity="0.157"/>
+  <circle cx="0.87" cy="124.76" r="0.105" fill="#f2e6cc" fill-opacity="0.154"/>
+  <circle cx="26.45" cy="112.02" r="0.123" fill="#000000" fill-opacity="0.110"/>
+  <circle cx="17.86" cy="30.91" r="0.099" fill="#f2e6cc" fill-opacity="0.116"/>
+  <circle cx="7.99" cy="116.94" r="0.075" fill="#f2e6cc" fill-opacity="0.144"/>
+  <circle cx="55.13" cy="54.05" r="0.132" fill="#f2e6cc" fill-opacity="0.150"/>
+  <circle cx="31.91" cy="2.40" r="0.084" fill="#f2e6cc" fill-opacity="0.106"/>
+  <circle cx="48.72" cy="22.15" r="0.087" fill="#f2e6cc" fill-opacity="0.182"/>
+  <circle cx="19.87" cy="66.61" r="0.096" fill="#f2e6cc" fill-opacity="0.190"/>
+  <circle cx="34.16" cy="31.93" r="0.068" fill="#f2e6cc" fill-opacity="0.188"/>
+  <circle cx="34.24" cy="97.66" r="0.131" fill="#f2e6cc" fill-opacity="0.142"/>
+  <circle cx="30.82" cy="65.81" r="0.109" fill="#000000" fill-opacity="0.143"/>
+  <circle cx="29.14" cy="120.98" r="0.110" fill="#f2e6cc" fill-opacity="0.203"/>
+  <circle cx="15.82" cy="71.90" r="0.134" fill="#000000" fill-opacity="0.198"/>
+  <circle cx="7.41" cy="56.81" r="0.047" fill="#f2e6cc" fill-opacity="0.114"/>
+  <circle cx="40.81" cy="100.74" r="0.130" fill="#f2e6cc" fill-opacity="0.102"/>
+  <circle cx="40.25" cy="18.37" r="0.128" fill="#000000" fill-opacity="0.215"/>
+  <circle cx="58.06" cy="51.18" r="0.089" fill="#f2e6cc" fill-opacity="0.219"/>
+  <circle cx="9.84" cy="55.45" r="0.092" fill="#000000" fill-opacity="0.127"/>
+  <circle cx="19.42" cy="92.80" r="0.042" fill="#f2e6cc" fill-opacity="0.158"/>
+  <circle cx="1.10" cy="42.60" r="0.102" fill="#f2e6cc" fill-opacity="0.152"/>
+  <circle cx="60.05" cy="101.30" r="0.137" fill="#f2e6cc" fill-opacity="0.095"/>
+  <circle cx="2.41" cy="100.10" r="0.067" fill="#f2e6cc" fill-opacity="0.098"/>
+  <circle cx="55.56" cy="105.24" r="0.066" fill="#f2e6cc" fill-opacity="0.101"/>
+  <circle cx="34.78" cy="90.00" r="0.049" fill="#000000" fill-opacity="0.088"/>
+  <circle cx="25.93" cy="9.31" r="0.134" fill="#000000" fill-opacity="0.169"/>
+  <circle cx="5.10" cy="110.03" r="0.047" fill="#000000" fill-opacity="0.201"/>
+  <circle cx="20.67" cy="71.07" r="0.133" fill="#f2e6cc" fill-opacity="0.118"/>
+  <circle cx="32.12" cy="30.64" r="0.051" fill="#f2e6cc" fill-opacity="0.103"/>
+  <circle cx="12.30" cy="40.09" r="0.071" fill="#f2e6cc" fill-opacity="0.186"/>
+  <circle cx="30.49" cy="22.86" r="0.075" fill="#f2e6cc" fill-opacity="0.083"/>
+  <circle cx="0.94" cy="94.20" r="0.095" fill="#f2e6cc" fill-opacity="0.107"/>
+  <circle cx="56.98" cy="13.66" r="0.122" fill="#f2e6cc" fill-opacity="0.141"/>
+  <circle cx="50.88" cy="50.51" r="0.091" fill="#f2e6cc" fill-opacity="0.176"/>
+  <circle cx="20.89" cy="106.95" r="0.111" fill="#000000" fill-opacity="0.169"/>
+  <circle cx="21.19" cy="6.99" r="0.053" fill="#f2e6cc" fill-opacity="0.090"/>
+  <circle cx="15.58" cy="20.98" r="0.048" fill="#000000" fill-opacity="0.198"/>
+  <circle cx="40.88" cy="36.23" r="0.064" fill="#000000" fill-opacity="0.121"/>
+  <circle cx="9.60" cy="57.29" r="0.066" fill="#f2e6cc" fill-opacity="0.215"/>
+  <circle cx="33.35" cy="31.41" r="0.137" fill="#000000" fill-opacity="0.123"/>
+  <circle cx="0.07" cy="49.04" r="0.087" fill="#f2e6cc" fill-opacity="0.150"/>
+  <circle cx="30.77" cy="0.64" r="0.066" fill="#f2e6cc" fill-opacity="0.093"/>
+  <circle cx="2.54" cy="2.89" r="0.070" fill="#f2e6cc" fill-opacity="0.113"/>
+  <circle cx="32.26" cy="96.44" r="0.106" fill="#f2e6cc" fill-opacity="0.180"/>
+  <circle cx="23.74" cy="41.91" r="0.138" fill="#000000" fill-opacity="0.101"/>
+  <circle cx="39.21" cy="5.63" r="0.124" fill="#000000" fill-opacity="0.205"/>
+  <circle cx="44.74" cy="104.37" r="0.054" fill="#000000" fill-opacity="0.153"/>
+  <circle cx="50.90" cy="103.40" r="0.123" fill="#f2e6cc" fill-opacity="0.162"/>
+  <circle cx="41.63" cy="89.09" r="0.063" fill="#000000" fill-opacity="0.084"/>
+  <circle cx="21.99" cy="13.48" r="0.124" fill="#f2e6cc" fill-opacity="0.158"/>
+  <circle cx="38.17" cy="87.47" r="0.089" fill="#000000" fill-opacity="0.080"/>
+  <circle cx="45.61" cy="64.63" r="0.094" fill="#000000" fill-opacity="0.172"/>
+  <circle cx="44.91" cy="32.41" r="0.047" fill="#f2e6cc" fill-opacity="0.117"/>
+  <circle cx="12.51" cy="95.07" r="0.138" fill="#000000" fill-opacity="0.149"/>
+  <circle cx="29.20" cy="87.86" r="0.117" fill="#f2e6cc" fill-opacity="0.166"/>
+  <!-- patina:end -->
+</svg>

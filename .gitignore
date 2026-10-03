@@ -1,0 +1,11 @@
+build/
+dist/
+plugin.dylib
+plugin.so
+plugin.dll
+*.vcvplugin
+.DS_Store
+tests/test_jules
+tools/preview/
+tests/test_odette
+tests/*.dSYM/
