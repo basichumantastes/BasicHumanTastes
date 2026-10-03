@@ -1,9 +1,9 @@
 #pragma once
 #include <vector>
 
-// Ensembles de perchoirs partagés par Colette (qui s'y pose) et Fernand (qui choisit l'accord de chaque île).
+// Ensembles de perchoirs de Colette.
 // Intervalles en demi-tons répétés à chaque octave ; HARMONICS suit la série harmonique, FREE n'a aucun perchoir.
-// L'ordre compte : la sortie HARMONY de Fernand envoie l'indice (1 V par harmonie) à l'entrée HARMONY de Colette.
+// L'ordre compte : l'entrée HARMONY de Colette choisit l'indice à raison de 1 V par harmonie.
 struct HarmonySet {
 	const char* name;
 	std::vector<float> semitones;
