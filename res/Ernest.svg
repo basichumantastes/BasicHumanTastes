@@ -32,7 +32,7 @@
     <circle cx="14.851" cy="64.820" r="0.25" fill="#26231f" stroke="none"/>
   </g>
   <!-- Plaque anthracite des sorties -->
-  <rect x="31" y="103" width="27.5" height="17.5" rx="1.5" fill="#26231f"/>
+  <rect x="37" y="103" width="22" height="17.5" rx="1.5" fill="#26231f"/>
   <!-- Bandeau du bas anthracite -->
   <rect x="0" y="122" width="60.96" height="6.5" fill="#26231f"/>
 </svg>

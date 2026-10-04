@@ -177,8 +177,8 @@ ERNEST = dict(
         "Ernest is a single percussion voice built around an oscillator whose pitch can be bent six different ways. "
         "Hit it with a trigger and you get kicks, toms, snares, zaps and metallic pings. Leave the trigger unpatched "
         "and it plays continuously, which is handy for tuning.",
-        "Beyond the classic drum-machine voice it has a few modular extras: a pitch input, CV over the modulation, "
-        "a modulation output and a free-running mode.",
+        "Beyond the classic drum-machine voice it has a few modular extras: a pitch input, CV over the modulation "
+        "shape, depth and rate and over the decay, a modulation output and a free-running mode.",
     ],
     glance=[
         "Sine or triangle oscillator, 20 Hz to 12 kHz, with a 1 V/oct input",
@@ -189,8 +189,9 @@ ERNEST = dict(
     ],
     sections=[
         ("Controls", [
-            ("Screen", "The modulation shape and the base pitch."),
-            ("PITCH", "Base pitch, from 20 Hz to 12 kHz. It starts at 55 Hz."),
+            ("Screen", "The modulation shape being played (knob plus TYPE input) and the base pitch."),
+            ("PITCH", "Base pitch, from 20 Hz to 12 kHz. It starts at 55 Hz. With V/OCT patched, it transposes the "
+                      "incoming note in semitones instead."),
             ("WAVE", "Lit: triangle, slightly brighter. Off: sine."),
             ("RETRIG", "Lit (default): every hit restarts the modulation, so every hit sounds the same. Off: the "
                        "modulation keeps running and each hit lands somewhere else in its cycle."),
@@ -211,9 +212,15 @@ ERNEST = dict(
         ("Inputs", [
             ("TRIG", "Plays a hit: restarts the oscillator, both envelopes and, with RETRIG lit, the modulation. "
                      "The small light flashes on each hit. Unpatched, Ernest plays continuously."),
-            ("V/OCT", "Added to PITCH, 1 volt per octave."),
+            ("V/OCT", "Patched, Ernest plays the note it receives, 1 volt per octave with 0 V = C4 as everywhere in "
+                      "Rack, and the display shows the note. PITCH then transposes it in whole semitones from its "
+                      "starting position, so the notes stay in tune."),
+            ("TYPE", "Added to the shape selector, 1 V per shape: +1 V moves one icon clockwise, −1 V one icon back. "
+                     "Feed it a sequencer CV to change the sound from hit to hit."),
             ("DEPTH", "Added to the DEPTH knob; ±5 V covers the whole range."),
             ("RATE", "Added to the RATE knob; 1 V moves it a tenth of its travel."),
+            ("DECAY", "Added to the DECAY knob; 1 V moves it a tenth of its travel, roughly doubling or halving "
+                      "the length."),
             ("RING IN", "The signal used by ring modulation (±5 V)."),
         ]),
         ("Outputs", [

@@ -4,7 +4,8 @@
 // Ernest : oscillateur de percussion. Sinus ou triangle, hauteur 20 Hz à 12 kHz, modulation de hauteur
 // à 6 formes (saw down, square, triangle, random, noise, envelope), profondeur bipolaire, vitesse de
 // 0,1 Hz à 5 kHz (au-delà de ~20 Hz on passe en modulation croisée), enveloppe de volume à simple
-// decay, BASS (grave puis saturation) et modulation en anneau.
+// decay, BASS (grave puis saturation) et modulation en anneau. CV sur la forme, la profondeur, la vitesse
+// et le decay.
 
 
 // Noms pour l'afficheur 14 segments : « ! » est l'espace pleine largeur de la police DSEG
@@ -13,6 +14,37 @@ static const char* const MOD_TYPE_NAMES[] = {"SAW!DOWN", "SQUARE", "TRIANGLE", "
 // Bornes de la hauteur, en octaves par rapport à C4 (comme le V/Oct de Rack)
 static const float PITCH_MIN = std::log2(20.f / dsp::FREQ_C4);
 static const float PITCH_MAX = std::log2(12000.f / dsp::FREQ_C4);
+static const float PITCH_DEFAULT = std::log2(55.f / dsp::FREQ_C4);
+
+// Avec V/OCT branchée, PITCH transpose par demi-tons entiers depuis sa position de départ
+static int pitchSemitones(float knob) {
+	return (int) std::round((knob - PITCH_DEFAULT) * 12.f);
+}
+
+// Le nom de la note pour l'afficheur (bémols : la police DSEG n'a pas de dièse)
+static std::string noteName(float pitch) {
+	static const char* const NAMES[12] = {"C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B"};
+	int n = (int) std::round(pitch * 12.f);
+	return string::f("%s%d", NAMES[((n % 12) + 12) % 12], 4 + (int) std::floor(n / 12.f));
+}
+
+// L'infobulle de PITCH : des Hz, ou une transposition quand V/OCT est branchée
+struct ErnestPitchQuantity : ParamQuantity {
+	int voctInput = 0;
+	bool voct() { return module && module->inputs[voctInput].isConnected(); }
+	std::string getLabel() override { return voct() ? "Transposition (V/OCT branchée)" : ParamQuantity::getLabel(); }
+	std::string getUnit() override { return voct() ? " demi-tons" : ParamQuantity::getUnit(); }
+	std::string getDisplayValueString() override {
+		return voct() ? string::f("%+d", pitchSemitones(getValue())) : ParamQuantity::getDisplayValueString();
+	}
+	void setDisplayValueString(std::string s) override {
+		if (!voct()) {
+			ParamQuantity::setDisplayValueString(s);
+			return;
+		}
+		setValue(clamp(PITCH_DEFAULT + std::atoi(s.c_str()) / 12.f, getMinValue(), getMaxValue()));
+	}
+};
 
 
 struct Ernest : Module {
@@ -35,6 +67,9 @@ struct Ernest : Module {
 		DEPTH_INPUT,
 		SPEED_INPUT,
 		RING_INPUT,
+		// Ajoutées après coup : en fin de liste pour que les câbles des patchs existants restent en place
+		TYPE_INPUT,
+		DECAY_INPUT,
 		INPUTS_LEN
 	};
 	enum OutputId {
@@ -67,11 +102,16 @@ struct Ernest : Module {
 	float pitchEnv = 0.f;
 	float ampEnv = 0.f;
 	float lowPass = 0.f;
+	// La hauteur de base (sans la modulation), pour l'afficheur
+	float basePitch = PITCH_DEFAULT;
+	bool voctMode = false;
+	// La forme jouée (bouton + CV), pour l'afficheur
+	int modType = MOD_ENVELOPE;
 
 	Ernest() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
 		// Réglages par défaut : un kick analogique (55 Hz, enveloppe de hauteur)
-		configParam(PITCH_PARAM, PITCH_MIN, PITCH_MAX, std::log2(55.f / dsp::FREQ_C4), "Pitch", " Hz", 2.f, dsp::FREQ_C4);
+		configParam<ErnestPitchQuantity>(PITCH_PARAM, PITCH_MIN, PITCH_MAX, PITCH_DEFAULT, "Pitch", " Hz", 2.f, dsp::FREQ_C4)->voctInput = VOCT_INPUT;
 		configSwitch(WAVE_PARAM, 0.f, 1.f, 0.f, "Wave", {"Sine", "Triangle"});
 		configSwitch(MOD_TYPE_PARAM, 0.f, MOD_TYPES_LEN - 1, MOD_ENVELOPE, "Pitch modulation shape", {"Saw down (pitch falls, repeats)", "Square (two pitches alternate)", "Triangle (pitch rises and falls)", "Random steps", "Noise bursts (snares)", "Envelope (kicks, toms)"});
 		configParam(MOD_DEPTH_PARAM, -1.f, 1.f, 0.5f, "Pitch modulation depth (negative = inverted)", "%", 0.f, 100.f);
@@ -87,6 +127,8 @@ struct Ernest : Module {
 		configInput(DEPTH_INPUT, "Modulation depth CV (±5 V = full range)");
 		configInput(SPEED_INPUT, "Modulation rate CV (1 V = a tenth of the range)");
 		configInput(RING_INPUT, "Ring modulation source (switch RING on)");
+		configInput(TYPE_INPUT, "Modulation shape CV (1 V = one shape)");
+		configInput(DECAY_INPUT, "Decay CV (1 V = a tenth of the range)");
 		configOutput(MOD_OUTPUT, "Pitch modulation (after depth)");
 		configOutput(OUT_OUTPUT, "Audio");
 	}
@@ -112,7 +154,9 @@ struct Ernest : Module {
 	}
 
 	void process(const ProcessArgs& args) override {
-		int modType = (int) params[MOD_TYPE_PARAM].getValue();
+		// CV de forme : 1 V par forme, ajouté au sélecteur
+		modType = (int) std::round(params[MOD_TYPE_PARAM].getValue() + inputs[TYPE_INPUT].getVoltage());
+		modType = clamp(modType, 0, MOD_TYPES_LEN - 1);
 
 		float depth = params[MOD_DEPTH_PARAM].getValue() + inputs[DEPTH_INPUT].getVoltage() / 5.f;
 		depth = clamp(depth, -1.f, 1.f);
@@ -147,7 +191,14 @@ struct Ernest : Module {
 		float depthOct = 8.f * depth * std::fabs(depth);
 		float mod = depthOct * modSignal(modType);
 
-		float pitch = params[PITCH_PARAM].getValue() + inputs[VOCT_INPUT].getVoltage() + mod;
+		// V/OCT branchée : Ernest joue la note reçue (0 V = do 4, comme partout dans Rack), et PITCH
+		// la transpose par demi-tons entiers. Débranchée : PITCH règle la hauteur, en Hz.
+		voctMode = inputs[VOCT_INPUT].isConnected();
+		if (voctMode)
+			basePitch = inputs[VOCT_INPUT].getVoltage() + pitchSemitones(params[PITCH_PARAM].getValue()) / 12.f;
+		else
+			basePitch = params[PITCH_PARAM].getValue();
+		float pitch = basePitch + mod;
 		float freq = dsp::FREQ_C4 * dsp::exp2_taylor5(clamp(pitch, -10.f, 10.f));
 		freq = clamp(freq, 0.f, 0.45f * args.sampleRate);
 
@@ -169,7 +220,8 @@ struct Ernest : Module {
 
 		// Enveloppe de volume à simple Decay : de 3 ms à 3 s. Sans câble de trigger,
 		// le module sonne en continu, pratique pour régler la hauteur et la modulation.
-		float decayTime = 0.003f * std::pow(1000.f, params[DECAY_PARAM].getValue());
+		float decay = clamp(params[DECAY_PARAM].getValue() + inputs[DECAY_INPUT].getVoltage() / 10.f, 0.f, 1.f);
+		float decayTime = 0.003f * std::pow(1000.f, decay);
 		ampEnv *= std::exp(-args.sampleTime / decayTime);
 		float amp = inputs[TRIG_INPUT].isConnected() ? ampEnv : 1.f;
 		float out = osc * amp;
@@ -227,13 +279,18 @@ struct ErnestDisplay : TransparentWidget {
 			return;
 
 		int modType = Ernest::MOD_ENVELOPE;
-		float pitch = std::log2(55.f / dsp::FREQ_C4);
+		float pitch = PITCH_DEFAULT;
+		bool voct = false;
 		if (module) {
-			modType = (int) module->params[Ernest::MOD_TYPE_PARAM].getValue();
-			pitch = module->params[Ernest::PITCH_PARAM].getValue();
+			modType = module->modType;
+			pitch = module->basePitch;
+			voct = module->voctMode;
 		}
 		float freq = dsp::FREQ_C4 * std::pow(2.f, pitch);
 		std::string freqText = freq < 1000.f ? string::f("%.0fHZ", freq) : string::f("%.2fKHZ", freq / 1000.f);
+		// Avec V/OCT, la note jouée plutôt que la fréquence (« ! » : espace pleine largeur)
+		if (voct)
+			freqText = "NOTE!" + noteName(pitch);
 
 		nvgFontFaceId(args.vg, font->handle);
 		nvgFontSize(args.vg, 10.f);
@@ -296,26 +353,30 @@ struct ErnestWidget : ModuleWidget {
 		addLabel(Vec(49.0, 72.5), "BASS");
 		addParam(createParamCentered<RoundBlackKnob>(mm2px(Vec(49.0, 80.0)), module, Ernest::LOW_BOOST_PARAM));
 
-		// Entrées
-		addLabel(Vec(9.0, 91.0), "TRIG", false, 7.f);
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(9.0, 98.0)), module, Ernest::TRIG_INPUT));
-		addChild(createLightCentered<SmallLight<VfdLight>>(mm2px(Vec(14.0, 93.0)), module, Ernest::TRIG_LIGHT));
-		addLabel(Vec(23.0, 91.0), "V/OCT", false, 7.f);
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(23.0, 98.0)), module, Ernest::VOCT_INPUT));
-		addLabel(Vec(38.0, 91.0), "DEPTH", false, 7.f);
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(38.0, 98.0)), module, Ernest::DEPTH_INPUT));
-		addLabel(Vec(52.0, 91.0), "RATE", false, 7.f);
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(52.0, 98.0)), module, Ernest::SPEED_INPUT));
+		// Entrées et sorties : deux rangées de cinq colonnes, CV de hauteur et de modulation en haut
+		addLabel(Vec(7.0, 91.0), "TRIG", false, 7.f);
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.0, 98.0)), module, Ernest::TRIG_INPUT));
+		addChild(createLightCentered<SmallLight<VfdLight>>(mm2px(Vec(11.8, 93.0)), module, Ernest::TRIG_LIGHT));
+		addLabel(Vec(18.5, 91.0), "V/OCT", false, 7.f);
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(18.5, 98.0)), module, Ernest::VOCT_INPUT));
+		addLabel(Vec(30.48, 91.0), "TYPE", false, 7.f);
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(30.48, 98.0)), module, Ernest::TYPE_INPUT));
+		addLabel(Vec(42.5, 91.0), "DEPTH", false, 7.f);
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(42.5, 98.0)), module, Ernest::DEPTH_INPUT));
+		addLabel(Vec(54.5, 91.0), "RATE", false, 7.f);
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(54.5, 98.0)), module, Ernest::SPEED_INPUT));
 
-		// Anneau et sorties
-		addLabel(Vec(9.0, 107.0), "RING IN", false, 7.f);
-		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(9.0, 114.0)), module, Ernest::RING_INPUT));
-		addLabel(Vec(22.0, 107.0), "RING", false, 7.f);
-		addParam(createLightParamCentered<VCVLightLatch<MediumSimpleLight<VfdLight>>>(mm2px(Vec(22.0, 114.0)), module, Ernest::RING_PARAM, Ernest::RING_LIGHT));
-		addLabel(Vec(38.0, 107.0), "MOD", true, 7.f);
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(38.0, 114.0)), module, Ernest::MOD_OUTPUT));
-		addLabel(Vec(52.0, 107.0), "OUT", true, 7.f);
-		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(52.0, 114.0)), module, Ernest::OUT_OUTPUT));
+		// Le bouton RING entre les deux jacks : DECAY et RING IN sont trop larges pour être voisins
+		addLabel(Vec(7.0, 107.0), "DECAY", false, 7.f);
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(7.0, 114.0)), module, Ernest::DECAY_INPUT));
+		addLabel(Vec(18.5, 107.0), "RING", false, 7.f);
+		addParam(createLightParamCentered<VCVLightLatch<MediumSimpleLight<VfdLight>>>(mm2px(Vec(18.5, 114.0)), module, Ernest::RING_PARAM, Ernest::RING_LIGHT));
+		addLabel(Vec(30.48, 107.0), "RING IN", false, 7.f);
+		addInput(createInputCentered<PJ301MPort>(mm2px(Vec(30.48, 114.0)), module, Ernest::RING_INPUT));
+		addLabel(Vec(42.5, 107.0), "MOD", true, 7.f);
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(42.5, 114.0)), module, Ernest::MOD_OUTPUT));
+		addLabel(Vec(54.5, 107.0), "OUT", true, 7.f);
+		addOutput(createOutputCentered<PJ301MPort>(mm2px(Vec(54.5, 114.0)), module, Ernest::OUT_OUTPUT));
 	}
 };
 
