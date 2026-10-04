@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="101.6mm" height="128.5mm" viewBox="0 0 101.6 128.5">
+<!-- Gastounet, 20HP : laque bleu nuit et laiton. Généré par tools/gastounet_panel.py -->
+<defs><linearGradient id="laque" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#17223b"/><stop offset="1" stop-color="#0e1628"/></linearGradient></defs>
+<rect x="0" y="0" width="101.6" height="128.5" fill="url(#laque)"/>
+<rect x="1.400" y="1.400" width="98.800" height="125.700" rx="0.60" fill="none" fill-opacity="0.00" stroke="#c8a25c" stroke-width="0.20" stroke-opacity="0.35"/>
+<rect x="4.000" y="12.600" width="74.000" height="30.000" rx="1.00" fill="#060a12" fill-opacity="1.00" stroke="#5a4c33" stroke-width="0.20" stroke-opacity="1.00"/>
+<path d="M6.000 23.600 L76.000 23.600" stroke="#5a4c33" stroke-width="0.15" stroke-opacity="0.60" fill="none"/>
+<rect x="80.000" y="12.600" width="17.600" height="30.000" rx="1.00" fill="#04070e" fill-opacity="0.35" stroke="#c8a25c" stroke-width="0.22" stroke-opacity="0.32"/>
+<rect x="4.000" y="52.400" width="93.600" height="42.600" rx="1.00" fill="#04070e" fill-opacity="0.35" stroke="#c8a25c" stroke-width="0.22" stroke-opacity="0.32"/>
+<path d="M15.400 58.200 L15.400 92.200" stroke="#c8a25c" stroke-width="0.20" stroke-opacity="0.25" fill="none"/>
+<path d="M56.000 58.200 L56.000 92.200" stroke="#c8a25c" stroke-width="0.20" stroke-opacity="0.25" fill="none"/>
+<rect x="4.000" y="97.000" width="93.600" height="11.000" rx="1.00" fill="#04070e" fill-opacity="0.35" stroke="#c8a25c" stroke-width="0.22" stroke-opacity="0.32"/>
+<rect x="4.000" y="110.000" width="74.600" height="13.000" rx="1.00" fill="#04070e" fill-opacity="0.35" stroke="#c8a25c" stroke-width="0.22" stroke-opacity="0.32"/>
+<rect x="80.600" y="110.000" width="17.000" height="13.000" rx="1.00" fill="#c8a25c" fill-opacity="1.00"/>
+</svg>

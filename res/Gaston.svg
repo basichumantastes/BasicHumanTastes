@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="182.88mm" height="128.5mm" viewBox="0 0 182.88 128.5">
+<!-- Gaston, 36HP : laque bleu nuit et laiton. Généré par tools/gaston_panel.py -->
+<defs><linearGradient id="laque" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#17223b"/><stop offset="1" stop-color="#0e1628"/></linearGradient></defs>
+<rect x="0" y="0" width="182.88" height="128.5" fill="url(#laque)"/>
+<rect x="1.400" y="1.400" width="180.080" height="125.700" rx="0.60" fill="none" fill-opacity="0.00" stroke="#c8a25c" stroke-width="0.20" stroke-opacity="0.35"/>
+<rect x="5.600" y="12.600" width="35.600" height="33.400" rx="1.00" fill="#04070e" fill-opacity="0.35" stroke="#c8a25c" stroke-width="0.22" stroke-opacity="0.32"/>
+<rect x="7.600" y="16.800" width="31.600" height="6.800" rx="0.60" fill="#060a12" fill-opacity="1.00" stroke="#5a4c33" stroke-width="0.20" stroke-opacity="1.00"/>
+<rect x="5.600" y="48.000" width="35.600" height="17.400" rx="1.00" fill="#04070e" fill-opacity="0.35" stroke="#c8a25c" stroke-width="0.22" stroke-opacity="0.32"/>
+<rect x="5.600" y="67.400" width="35.600" height="35.200" rx="1.00" fill="#04070e" fill-opacity="0.35" stroke="#c8a25c" stroke-width="0.22" stroke-opacity="0.32"/>
+<rect x="5.600" y="104.600" width="35.600" height="17.200" rx="1.00" fill="#c8a25c" fill-opacity="1.00"/>
+<rect x="43.600" y="12.600" width="133.680" height="7.600" rx="1.00" fill="#060a12" fill-opacity="1.00" stroke="#5a4c33" stroke-width="0.20" stroke-opacity="1.00"/>
+<rect x="43.600" y="22.200" width="133.680" height="64.600" rx="1.00" fill="#04070e" fill-opacity="0.35" stroke="#c8a25c" stroke-width="0.22" stroke-opacity="0.32"/>
+<rect x="45.440" y="38.000" width="130.000" height="30.600" rx="0.80" fill="#060a12" fill-opacity="1.00" stroke="#3d3526" stroke-width="0.20" stroke-opacity="1.00"/>
+<rect x="46.640" y="36.900" width="9.800" height="2.200" rx="0.30" fill="#0f1628" fill-opacity="1.00"/>
+<path d="M46.000 75.800 L174.880 75.800" stroke="#c8a25c" stroke-width="0.20" stroke-opacity="0.18" fill="none"/>
+<rect x="43.600" y="88.800" width="133.680" height="34.200" rx="1.00" fill="#04070e" fill-opacity="0.35" stroke="#c8a25c" stroke-width="0.22" stroke-opacity="0.32"/>
+<rect x="138.840" y="99.600" width="35.200" height="8.200" rx="0.80" fill="#060d10" fill-opacity="1.00" stroke="#2e5650" stroke-width="0.20" stroke-opacity="1.00"/>
+<rect x="45.800" y="109.200" width="129.280" height="12.600" rx="0.80" fill="#c8a25c" fill-opacity="1.00"/>
+<path d="M137.440 111.600 L137.440 119.400" stroke="#141a2a" stroke-width="0.20" stroke-opacity="0.35" fill="none"/>
+</svg>

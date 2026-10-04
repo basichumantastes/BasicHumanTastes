@@ -11,3 +11,8 @@ tests/test_odette
 tests/*.dSYM/
 tests/test_colette
 tests/probe_*
+tests/test_lucienne
+proto-wav/
+tests/test_ernest
+tests/test_gaston
+tests/test_gastounet

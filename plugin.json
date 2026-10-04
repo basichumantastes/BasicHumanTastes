@@ -71,6 +71,43 @@
         "Random"
       ],
       "manualUrl": ""
+    },
+    {
+      "slug": "Lucienne",
+      "name": "Lucienne",
+      "description": "Six analog-style cores tied in a ring, tuned by ear: they lock onto just intervals, cross-modulate into chaos, starve on a sagging power rail. Gates opened by an internal register, two resonant filters, a halo, and two asynchronous LFOs crossfaded across twelve destinations",
+      "tags": [
+        "Oscillator",
+        "Synth voice",
+        "Low-pass gate",
+        "Filter",
+        "Low-frequency oscillator",
+        "Random"
+      ],
+      "manualUrl": ""
+    },
+    {
+      "slug": "Gaston",
+      "name": "Gaston",
+      "description": "Master sequencer for drum voices: eight trigger lanes with per-step probability and four CV lanes, each with its own length, clock ratio and direction for polyrhythms. Built-in clock with swing and vintage 96 PPQN timing, CDJ-style transport, pads with live recording, and a map of all lanes",
+      "tags": [
+        "Sequencer",
+        "Clock generator",
+        "Drum",
+        "Polyphonic",
+        "Random"
+      ],
+      "manualUrl": ""
+    },
+    {
+      "slug": "Gastounet",
+      "name": "Gastounet",
+      "description": "Pattern memory and song expander for Gaston (attach to its left): 4 banks of 16 patterns, Korg-style write and copy, next and random, quantized launch with restart or legato, and a song made of pattern rows",
+      "tags": [
+        "Sequencer",
+        "Expander"
+      ],
+      "manualUrl": ""
     }
   ]
 }

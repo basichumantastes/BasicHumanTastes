@@ -9,6 +9,9 @@ struct PanelLabel : TransparentWidget {
 	float fontSize = 6.f;
 	NVGcolor color = nvgRGB(0x1a, 0x1a, 0x1a);
 	int align = NVG_ALIGN_CENTER;
+	float letterSpacing = 0.f;
+	// Épaississement (px) : Michroma est fine ; on redouble le tracé, légèrement décalé
+	float embolden = 0.f;
 
 	void draw(const DrawArgs& args) override {
 		std::shared_ptr<window::Font> font = APP->window->loadFont(asset::plugin(pluginInstance, "res/fonts/Michroma-Regular.ttf"));
@@ -17,7 +20,10 @@ struct PanelLabel : TransparentWidget {
 		nvgFontFaceId(args.vg, font->handle);
 		nvgFontSize(args.vg, fontSize);
 		nvgFillColor(args.vg, color);
+		nvgTextLetterSpacing(args.vg, letterSpacing);
 		nvgTextAlign(args.vg, align | NVG_ALIGN_MIDDLE);
 		nvgText(args.vg, 0.f, 0.f, text.c_str(), NULL);
+		if (embolden > 0.f)
+			nvgText(args.vg, embolden, 0.f, text.c_str(), NULL);
 	}
 };

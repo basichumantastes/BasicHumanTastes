@@ -13,3 +13,6 @@ extern Model* modelMarcel;
 extern Model* modelJules;
 extern Model* modelOdette;
 extern Model* modelColette;
+extern Model* modelLucienne;
+extern Model* modelGaston;
+extern Model* modelGastounet;
