@@ -70,7 +70,7 @@
         "Polyphonic",
         "Random"
       ],
-      "manualUrl": ""
+      "manualUrl": "https://github.com/basichumantastes/BasicHumanTastes/blob/main/docs/Colette-manual.pdf"
     },
     {
       "slug": "Lucienne",
@@ -84,7 +84,7 @@
         "Low-frequency oscillator",
         "Random"
       ],
-      "manualUrl": ""
+      "manualUrl": "https://github.com/basichumantastes/BasicHumanTastes/blob/main/docs/Lucienne-manual.pdf"
     },
     {
       "slug": "Gaston",
@@ -97,7 +97,7 @@
         "Polyphonic",
         "Random"
       ],
-      "manualUrl": ""
+      "manualUrl": "https://github.com/basichumantastes/BasicHumanTastes/blob/main/docs/Gaston-manual.pdf"
     },
     {
       "slug": "Gastounet",
@@ -107,7 +107,7 @@
         "Sequencer",
         "Expander"
       ],
-      "manualUrl": ""
+      "manualUrl": "https://github.com/basichumantastes/BasicHumanTastes/blob/main/docs/Gastounet-manual.pdf"
     }
   ]
 }

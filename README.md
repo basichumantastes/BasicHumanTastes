@@ -9,11 +9,13 @@ Modules for [VCV Rack 2](https://vcvrack.com), for playing live and building gen
 | **Jules** | 18 HP | Six linked slopes that become cascading envelopes, polyrhythmic LFOs, slew limiters, chords, plucked notes or FM voices. Twelve modes, a chance control on the trigger cascade, a poly output. |
 | **Odette** | 18 HP | Stereo repeater with eight nested sizes, from plucked strings and flangers to 40-second loops. Tone, blur, spread, bounce, clock sync, reverse, freeze, drift and ducking. |
 | **Colette** | 20 HP | A murmuration: up to 32 voices fly in pitch space, gather, scatter and settle on the notes of a chord. Pull, wind, cohesion and scatter shape the flock; each bird that settles sends a trigger and its note. |
+| **Lucienne** | 56 HP | Six analog-style cores tied in a ring, tuned by ear: they lock onto just intervals, cross-modulate into chaos, starve on a sagging power rail. Gates opened by an internal register, two resonant filters, a halo, and two asynchronous LFOs crossfaded across twelve destinations. Panel in French. |
 | **Gaston** | 36 HP | Master sequencer for drum voices: eight trigger lanes with per-step probability and four CV lanes, each with its own length (up to 64 steps), clock ratio and direction for polyrhythms. Built-in clock with swing, CDJ-style transport, pads with live recording, and a map of all twelve lanes. |
 | **Gastounet** | 20 HP | Gaston's pattern memory, attached to its left: 4 banks of 16 patterns, Korg-style write and copy, next and random, quantized launch (now, beat, bar, 2 or 4 bars, or when track 1 loops) with restart or legato, and a song made of pattern rows. |
 
 Manuals (PDF): [all modules](docs/Basic-Human-Tastes-manuals.pdf) ·
-[Ernest](docs/Ernest-manual.pdf) · [Marcel](docs/Marcel-manual.pdf) · [Jules](docs/Jules-manual.pdf) · [Odette](docs/Odette-manual.pdf)
+[Ernest](docs/Ernest-manual.pdf) · [Marcel](docs/Marcel-manual.pdf) · [Jules](docs/Jules-manual.pdf) · [Odette](docs/Odette-manual.pdf) ·
+[Colette](docs/Colette-manual.pdf) · [Lucienne](docs/Lucienne-manual.pdf) · [Gaston](docs/Gaston-manual.pdf) · [Gastounet](docs/Gastounet-manual.pdf)
 
 ## Building
 
