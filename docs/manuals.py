@@ -20,7 +20,7 @@ from reportlab.platypus import (BaseDocTemplate, PageTemplate, Frame, Paragraph,
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-VERSION = "2.0.0"
+VERSION = "2.0.1"
 DATE = "October 2026"
 
 pdfmetrics.registerFont(TTFont("Michroma", os.path.join(ROOT, "res/fonts/Michroma-Regular.ttf")))
