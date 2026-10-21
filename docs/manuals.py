@@ -768,19 +768,23 @@ GASTON = dict(
                              "on), in groups of four. The number of the step being played lights up."),
             ("Trigger step", "Click the square to turn a step on or off. A step turned on starts at 100 %. The step being "
                              "played glows, and flashes when it fires. Steps past LENGTH are dimmed but stay editable."),
-            ("Probability", "The thin gauge under each lit step: its chance of firing, from 1 to 100 %. Drag it up or down; "
-                            "about 14 mm of mouse travel (twice the height of a step) covers the whole range. No number, no "
-                            "snapping. Empty and dotted on a step that is off."),
+            ("Probability", "The thin gauge under each lit step: its chance of firing, from 1 to 100 %. Drag it up or down: "
+                            "1 % per pixel of mouse travel, whatever the zoom. No number, no snapping. Double-click it to "
+                            "go back to 100 %. Empty and dotted on a step that is off."),
             ("CV bar", "On a CV track each step is a bar, drawn from a centre line in ±5 V or from the bottom in 0–10 V. "
-                       "Click in the bar area to set the voltage at that height, then drag to adjust it."),
+                       "Click in the bar area to set the voltage at that height, then drag to adjust it: 1 V per 24 pixels "
+                       "of mouse travel (a semitone every 2 pixels), whatever the zoom. Double-click a bar to bring it "
+                       "back to the centre value."),
             ("CV readout", "The strip at the bottom of each CV step shows its value: +2.3 in ±5 V, 7.5 in 0–10 V, or a note "
                            "such as Eb4 in SEMI. Clicking it does not change the value; dragging from it adjusts the value "
                            "without a jump. Dimmed on an inactive step."),
             ("Activation row", "The thin row under each CV step. Solid: the step sets its voltage (default). Dotted: the "
                                "step is inactive and the output keeps the voltage of the last active step (sample and "
                                "hold). Click to switch."),
-            ("Ctrl-click", "Ctrl-click (Cmd-click on Mac) on any step, on any page, makes it the last one: LENGTH jumps to "
-                           "that step."),
+            ("Fine adjustment", "Hold Ctrl (Cmd on Mac) while dragging a bar or a probability gauge to move 16 times more "
+                                "slowly, as with Rack's knobs. Ctrl-clicking a bar does not make it jump to the mouse."),
+            ("Alt-click", "Alt-click (Option-click on Mac) on any step, on any page, makes it the last one: LENGTH jumps to "
+                          "that step."),
             ("MAP", "All twelve tracks, one row each (1 to 8, then A to D), on the page shown and in line with the ribbon. "
                     "Trigger rows: steps that are on are lit, paler as their probability drops. CV rows: active steps are "
                     "lit, brighter the further they are from the centre. Steps past LENGTH are not drawn. Click a row to "
@@ -792,7 +796,12 @@ GASTON = dict(
                             "the track is not muted. Pad hits and CV tracks do not flash on the map."),
         ]),
         ("Right-click menus", [
-            ("Ribbon menu", "Right-click on the ribbon for the menu of the selected track. Its title names the track."),
+            ("Step value", "Right-click on a step: the top of the menu holds a field to type its value, applied with Enter. "
+                           "CV track: volts, or on a SEMI track a note such as Eb4 (C4 = 0 V) or volts. Trigger track: the "
+                           "probability in %, which also turns the step on. Below the field, Reset step does what a "
+                           "double-click does."),
+            ("Ribbon menu", "Right-click on the ribbon for the menu of the selected track, below the step value when you "
+                            "click on a step. Its title names the track."),
             ("Clear track", "Trigger track: all steps off, back to 100 %. CV track: all steps at the centre value and "
                             "active. LENGTH, RATIO and DIR are kept."),
             ("Randomize", "Over all 64 steps. Trigger track: about 30 % of the steps on, at 100 %. CV track: a random "

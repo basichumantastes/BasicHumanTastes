@@ -184,11 +184,66 @@ struct GastonButton : app::Switch {
 
 // Voie CV : bande de lecture en bas de chaque case (tension ou note), sous la zone de la barre (mm)
 static const float RUBAN_READ_H = 2.4f;
+// Glisser sur le ruban, en pixels d'écran (comme les potards de Rack, indépendant du zoom) : 1 V pour 24 px
+// (un demi-ton tous les 2 px), 1 % de probabilité par pixel ; Ctrl (Cmd sur Mac) divise par 16
+static const float RUBAN_PX_PER_VOLT = 24.f;
+static const float RUBAN_PX_PER_PROB = 100.f;
+static const float RUBAN_FINE = 16.f;
+
+// Une note saisie au clavier (« Eb4 », « d#3 », « C-1 ») en volts, C4 = 0 V ; false si ce n'en est pas une
+static bool parseNote(const std::string& s, float* volts) {
+	static const int BASE[7] = {9, 11, 0, 2, 4, 5, 7};
+	size_t i = 0;
+	while (i < s.size() && s[i] == ' ')
+		i++;
+	if (i >= s.size())
+		return false;
+	char c = std::toupper(s[i]);
+	if (c < 'A' || c > 'G')
+		return false;
+	int n = BASE[c - 'A'];
+	i++;
+	if (i < s.size() && s[i] == '#') {
+		n++;
+		i++;
+	}
+	else if (i < s.size() && s[i] == 'b') {
+		n--;
+		i++;
+	}
+	const char* start = s.c_str() + i;
+	char* end;
+	long oct = std::strtol(start, &end, 10);
+	if (end == start)
+		return false;
+	*volts = (n + 12 * (oct - 4)) / 12.f;
+	return true;
+}
+
+// Le champ de saisie du menu d'un pas : Entrée applique la valeur et ferme le menu
+struct GastonStepField : ui::TextField {
+	std::function<void(const std::string&)> commit;
+
+	void onSelectKey(const SelectKeyEvent& e) override {
+		if (e.action == GLFW_PRESS && (e.key == GLFW_KEY_ENTER || e.key == GLFW_KEY_KP_ENTER)) {
+			commit(getText());
+			if (ui::MenuOverlay* overlay = getAncestorOfType<ui::MenuOverlay>())
+				overlay->requestDelete();
+			e.consume(this);
+		}
+		if (!e.getTarget())
+			TextField::onSelectKey(e);
+	}
+};
 
 struct GastonRuban : OpaqueWidget {
 	Gaston* module = NULL;
 	int dragStep = -1;
 	bool dragCv = false;
+	// Dernier pas pressé et sa zone, pour le double-clic
+	enum Zone { NONE, VALUE, GAUGE };
+	int pressStep = -1;
+	Zone pressZone = NONE;
 	uint32_t seenFires = 0;
 	double fireTime = -1.0;
 
@@ -330,7 +385,7 @@ struct GastonRuban : OpaqueWidget {
 		if (!module || e.action != GLFW_PRESS)
 			return;
 		if (e.button == GLFW_MOUSE_BUTTON_RIGHT) {
-			openMenu();
+			openMenu(columnAt(e.pos.x), e.pos.y);
 			e.consume(this);
 			return;
 		}
@@ -339,14 +394,18 @@ struct GastonRuban : OpaqueWidget {
 		int k = columnAt(e.pos.x);
 		// Les interstices avalent aussi le clic, pour ne pas déplacer le module en éditant
 		e.consume(this);
+		pressStep = -1;
+		pressZone = NONE;
 		if (k < 0)
 			return;
 		Lane& l = module->lane();
 		int idx = module->page * PAGE + k;
-		if ((e.mods & RACK_MOD_MASK) == RACK_MOD_CTRL) {
+		int mods = e.mods & RACK_MOD_MASK;
+		if (mods == GLFW_MOD_ALT) {
 			l.length = idx + 1;
 			return;
 		}
+		pressStep = idx;
 		if (l.cv && e.pos.y >= yOf(gl::GAUGE_Y0) - mm2px(0.4f)) {
 			// La rangée d'activation : le pas pose sa tension, ou garde celle du pas actif précédent
 			l.on[idx] = !l.on[idx];
@@ -355,12 +414,13 @@ struct GastonRuban : OpaqueWidget {
 		}
 		if (l.cv) {
 			// Un clic sur la barre pose la tension à la hauteur de la souris, le glisser l'ajuste ;
-			// un clic sur la lecture ne la change pas, le glisser l'ajuste sans saut
+			// un clic sur la lecture, ou avec Ctrl (réglage fin), ne la change pas : le glisser l'ajuste sans saut
 			float y = e.pos.y - yOf(gl::STEP_Y0);
-			if (y < barH())
+			if (y < barH() && mods != RACK_MOD_CTRL)
 				l.value[idx] = clamp(1.f - y / barH(), 0.f, 1.f) * 2.f - 1.f;
 			dragStep = idx;
 			dragCv = true;
+			pressZone = VALUE;
 			return;
 		}
 		if (e.pos.y < yOf(gl::GAUGE_Y0) - mm2px(0.4f)) {
@@ -372,28 +432,94 @@ struct GastonRuban : OpaqueWidget {
 		else if (l.on[idx]) {
 			dragStep = idx;
 			dragCv = false;
+			pressZone = GAUGE;
 		}
+	}
+
+	// Double-clic : la tension revient au centre (comme « Clear track »), la probabilité à 100 %
+	void onDoubleClick(const DoubleClickEvent& e) override {
+		if (!module || pressStep < 0 || pressZone == NONE)
+			return;
+		Lane& l = module->lane();
+		if (pressZone == VALUE)
+			l.value[pressStep] = 0.f;
+		else
+			l.prob[pressStep] = 1.f;
+		e.consume(this);
 	}
 
 	void onDragMove(const DragMoveEvent& e) override {
 		if (!module || dragStep < 0)
 			return;
 		Lane& l = module->lane();
-		float dy = -e.mouseDelta.y / getAbsoluteZoom();
+		float dy = -e.mouseDelta.y;
+		if ((APP->window->getMods() & RACK_MOD_MASK) == RACK_MOD_CTRL)
+			dy /= RUBAN_FINE;
 		if (dragCv)
-			l.value[dragStep] = clamp(l.value[dragStep] + dy / barH() * 2.f, -1.f, 1.f);
+			l.value[dragStep] = clamp(l.value[dragStep] + dy / RUBAN_PX_PER_VOLT / 5.f, -1.f, 1.f);
 		else
-			l.prob[dragStep] = clamp(l.prob[dragStep] + dy / mm2px(14.f), 0.01f, 1.f);
+			l.prob[dragStep] = clamp(l.prob[dragStep] + dy / RUBAN_PX_PER_PROB, 0.01f, 1.f);
 	}
 
 	void onDragEnd(const DragEndEvent& e) override {
 		dragStep = -1;
 	}
 
-	void openMenu() {
+	// Le haut du menu quand le clic droit tombe sur un pas : sa valeur à saisir, et sa remise à zéro
+	void appendStepItems(ui::Menu* menu, int idx) {
+		Gaston* m = module;
+		Lane& l = m->lane();
+		int sel = m->selected;
+		auto lane = [=]() -> Lane& { return m->core.lanes[sel]; };
+		GastonStepField* field = new GastonStepField;
+		field->box.size.x = 120.f;
+		if (l.cv) {
+			menu->addChild(createMenuLabel(string::f("Step %d · %s", idx + 1, l.quantize ? "note or volts" : "volts")));
+			field->setText(l.quantize ? cvText(l, l.volts(idx)) : string::f("%.3f", l.volts(idx)));
+			field->commit = [=](const std::string& s) {
+				Lane& t = lane();
+				float v;
+				if (!(t.quantize && parseNote(s, &v))) {
+					const char* start = s.c_str();
+					char* end;
+					v = std::strtof(start, &end);
+					if (end == start)
+						return;
+				}
+				v = t.unipolar ? clamp(v, 0.f, 10.f) / 5.f - 1.f : clamp(v, -5.f, 5.f) / 5.f;
+				t.value[idx] = v;
+			};
+			menu->addChild(field);
+			menu->addChild(createMenuItem("Reset step", "double-click", [=]() { lane().value[idx] = 0.f; }));
+		}
+		else {
+			menu->addChild(createMenuLabel(string::f("Step %d · probability (%%)", idx + 1)));
+			field->setText(string::f("%.0f", l.prob[idx] * 100.f));
+			field->commit = [=](const std::string& s) {
+				const char* start = s.c_str();
+				char* end;
+				float p = std::strtof(start, &end);
+				if (end == start)
+					return;
+				Lane& t = lane();
+				t.on[idx] = true;
+				t.prob[idx] = clamp(p / 100.f, 0.01f, 1.f);
+			};
+			menu->addChild(field);
+			menu->addChild(createMenuItem("Reset to 100 %", "double-click", [=]() { lane().prob[idx] = 1.f; }, !l.on[idx]));
+		}
+		field->selectAll();
+		APP->event->setSelectedWidget(field);
+		menu->addChild(new ui::MenuSeparator);
+	}
+
+	void openMenu(int k, float y) {
 		Gaston* m = module;
 		Lane& l = m->lane();
 		ui::Menu* menu = createMenu();
+		// Sur un pas (pas sur la rangée d'activation d'une voie CV) : la valeur de ce pas d'abord
+		if (k >= 0 && !(l.cv && y >= yOf(gl::GAUGE_Y0) - mm2px(0.4f)))
+			appendStepItems(menu, m->page * PAGE + k);
 		menu->addChild(createMenuLabel(l.cv ? string::f("CV track %c", 'A' + m->selected - TRIG_LANES) : string::f("Track %d", m->selected + 1)));
 		menu->addChild(createMenuItem("Clear track", "", [=]() { m->lane().clear(); }));
 		menu->addChild(createMenuItem("Randomize", "", [=]() { m->core.randomizeLane(m->selected); }));

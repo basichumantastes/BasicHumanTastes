@@ -50,7 +50,7 @@ les multiplie par 1/0,70 (`G_FONT_SCALE`), pour que Rack affiche ce que montrent
 
 ### Réglages par voie
 
-- **LENGTH** de 1 à 64 ; Ctrl-clic (Cmd sur Mac) sur un pas en fait le dernier.
+- **LENGTH** de 1 à 64 ; Alt-clic (Option sur Mac) sur un pas en fait le dernier.
 - **DIVISION**, parmi ÷4 ÷3 ÷2 ×2/3 ×3/4 ×1 ×5/4 ×4/3 ×3/2 ×2 ×3 ×4 (voies CV comprises).
 - **SENS** : avant, arrière, aller-retour, hasard (bouton qui fait défiler).
 - Les potards LENGTH, DIVISION, SLEW agissent sur la voie sélectionnée et sautent à sa valeur quand on change de voie.
@@ -60,16 +60,21 @@ les multiplie par 1/0,70 (`G_FONT_SCALE`), pour que Rack affiche ce que montrent
 ## Édition
 
 - **Ruban, voie de trigs** : 16 cases carrées ; un clic allume ou éteint le pas. Sous chaque case, une jauge fine de
-  probabilité, sans chiffre : on glisse verticalement pour la régler (continu, sans aimant). Pas éteint : jauge vide en
-  pointillés.
+  probabilité, sans chiffre : on glisse verticalement pour la régler (continu, sans aimant, 1 % par pixel d'écran).
+  Pas éteint : jauge vide en pointillés.
 - **Ruban, voie CV** : barres verticales autour d'une ligne zéro (ou depuis le bas en 0–10 V) ; glisser verticalement
   règle la tension. En bas de chaque case, une bande de lecture affiche la valeur du pas : la tension (« +2.3 »,
   « 7.5 » en 0–10 V) ou la note (« Eb4 ») si la voie est quantifiée ; atténuée quand le pas est inactif. Un clic sur
   la lecture ne change pas la valeur, le glisser l'ajuste sans saut. Sous chaque case, la rangée d'activation
   (pleine : actif ; pointillés : inactif, en creux).
+- **Glisser** : en pixels d'écran, indépendant du zoom et de la taille des cases, comme les potards de Rack : 1 V pour
+  24 px (un demi-ton tous les 2 px), et Ctrl (Cmd sur Mac) divise par 16 pour le réglage fin. Ctrl-clic sur une barre
+  ne la fait pas sauter à la souris. **Double-clic** : la tension revient au centre, la probabilité à 100 %.
+- **Clic droit sur un pas** : en tête du menu, un champ pour taper sa valeur (volts ; note comme « Eb4 » ou volts sur
+  une voie quantifiée ; probabilité en % sur une voie de trigs, qui allume le pas) et la remise à zéro du pas.
 - Les numéros des pas sont au-dessus, collés. Les pas au-delà de LENGTH sont grisés mais restent modifiables.
 - Les pages se changent à la main (pas de suivi automatique) ; le bouton de la page où joue la voie clignote.
-- **Menu de voie** (clic droit sur le ruban) : effacer, copier et coller la voie, copier et coller la page,
+- **Menu de voie** (clic droit sur le ruban, sous les réglages du pas s'il y en a) : effacer, copier et coller la voie, copier et coller la page,
   remplir au hasard, décaler d'un pas à gauche ou à droite.
 
 ## Carte
