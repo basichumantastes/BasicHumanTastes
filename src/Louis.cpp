@@ -2,6 +2,7 @@
 #include "LouisCore.hpp"
 #include "LouisLayout.hpp"
 #include <cmath>
+#include <atomic>
 
 // Louis : un générateur Krell à quatre voix, sans son. Chaque voix est un cycle attaque/decay qui se relance lui-même ;
 // des dérives lentes déplacent les durées et les hauteurs, une boucle de mémoire peut rejouer les tirages, les voix
@@ -128,7 +129,10 @@ struct Louis : Module {
 	int wheelMask = 0;          // classes de hauteur absolues de la gamme en cours (0 en FREE)
 	int lastPc = -1;
 	double lastPcTime = -1e9;
-	std::string scaleText = "", clockText = "";
+	// Ce que la ligne d'état affiche, en nombres seulement : le fil audio les écrit, l'interface en fait du texte.
+	// (Une std::string partagée entre les deux fils faisait planter Rack, dans Live notamment.)
+	std::atomic<int> dispScale {louis::SCALE_DEFAULT}, dispRoot {0}, dispGrid {louis::GRID_DEFAULT}, dispSnap {100};
+	std::atomic<bool> dispExt {false}, dispClock {false};
 
 	Louis() {
 		config(PARAMS_LEN, INPUTS_LEN, OUTPUTS_LEN, LIGHTS_LEN);
@@ -273,7 +277,6 @@ struct Louis : Module {
 		int rootPc = (int) louis::posMod(std::lround(p.root * 12.f), 12);
 		if (p.extMask) {
 			wheelMask = p.extMask;
-			scaleText = "SCALE IN";
 		}
 		else {
 			int m = louis::SCALES[p.scale].mask, w = 0;
@@ -281,12 +284,13 @@ struct Louis : Module {
 				if ((m >> k) & 1)
 					w |= 1 << ((k + rootPc) % 12);
 			wheelMask = w;
-			scaleText = std::string(louis::SCALES[p.scale].name) + " · " + L_NOTE_NAMES[rootPc];
 		}
-		if (p.clockConnected)
-			clockText = string::f("CLOCK · GRID %s · SNAP %d %%", louis::GRID_NAMES[p.grid], (int) std::round(p.snap * 100.f));
-		else
-			clockText = "FREE TIMING";
+		dispExt = p.extMask != 0;
+		dispScale = p.scale;
+		dispRoot = rootPc;
+		dispClock = p.clockConnected;
+		dispGrid = p.grid;
+		dispSnap = (int) std::round(p.snap * 100.f);
 	}
 
 	int sinceDisplay = 0;
@@ -734,10 +738,15 @@ struct LouisScreen : TransparentWidget {
 		NVGcontext* vg = args.vg;
 		Vec s = box.size;
 		float top = mm2px(1.4f);
-		std::string left = module ? module->clockText : "FREE TIMING";
+		std::string left = "FREE TIMING";
+		if (module && module->dispClock)
+			left = string::f("CLOCK · GRID %s · SNAP %d %%", louis::GRID_NAMES[clamp((int) module->dispGrid, 0, louis::GRID_COUNT - 1)], (int) module->dispSnap);
 		if (system::getTime() - touchedAt < 1.5)
 			left = touched;
-		std::string right = module ? module->scaleText : "MIN PENTA · C";
+		std::string right = "MIN PENTA · C";
+		if (module)
+			right = module->dispExt ? std::string("SCALE IN")
+				: std::string(louis::SCALES[clamp((int) module->dispScale, 0, louis::SCALE_COUNT - 1)].name) + " · " + L_NOTE_NAMES[clamp((int) module->dispRoot, 0, 11)];
 		lText(vg, mm2px(2.0f), top, left, 4.2f, L_PHOS, NVG_ALIGN_LEFT, 0.6f, ll::FONT_MIC);
 		lText(vg, s.x - mm2px(2.0f), top, right, 4.2f, L_PHOS, NVG_ALIGN_RIGHT, 0.6f, ll::FONT_MIC);
 
