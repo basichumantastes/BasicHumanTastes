@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="172.72mm" height="128.5mm" viewBox="0 0 172.72 128.5">
+<!-- Louis, 34HP : bakélite ivoire, bandeaux ardoise. Généré par tools/louis_panel.py -->
+<defs><linearGradient id="ivoire" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f1ead9"/><stop offset="1" stop-color="#e3d9c2"/></linearGradient></defs>
+<rect x="0" y="0" width="172.72" height="128.5" fill="url(#ivoire)"/>
+<rect x="1.400" y="1.400" width="169.920" height="125.700" rx="0.60" fill="none" fill-opacity="0.00" stroke="#1d1b17" stroke-width="0.20" stroke-opacity="0.35"/>
+<rect x="1.400" y="1.400" width="169.920" height="8.200" rx="0.60" fill="#2c4250" fill-opacity="1.00"/>
+<path d="M1.400 9.600 L171.320 9.600" stroke="#000000" stroke-width="0.35" stroke-opacity="0.25" fill="none"/>
+<rect x="4.600" y="11.400" width="163.520" height="25.600" rx="1.20" fill="#1d1b17" fill-opacity="1.00"/>
+<rect x="5.000" y="11.800" width="162.720" height="24.800" rx="0.90" fill="#06120b" fill-opacity="1.00"/>
+<rect x="4.600" y="38.800" width="109.400" height="26.400" rx="1.00" fill="#ffffff" fill-opacity="0.18" stroke="#1d1b17" stroke-width="0.22" stroke-opacity="0.45"/>
+<rect x="4.600" y="38.800" width="109.400" height="4.000" rx="1.00" fill="#2c4250" fill-opacity="1.00"/>
+<rect x="4.600" y="41.600" width="109.400" height="1.200" rx="0.00" fill="#2c4250" fill-opacity="1.00"/>
+<path d="M4.800 42.800 L113.800 42.800" stroke="#000000" stroke-width="0.25" stroke-opacity="0.25" fill="none"/>
+<rect x="116.000" y="38.800" width="52.120" height="26.400" rx="1.00" fill="#ffffff" fill-opacity="0.18" stroke="#1d1b17" stroke-width="0.22" stroke-opacity="0.45"/>
+<rect x="116.000" y="38.800" width="52.120" height="4.000" rx="1.00" fill="#2c4250" fill-opacity="1.00"/>
+<rect x="116.000" y="41.600" width="52.120" height="1.200" rx="0.00" fill="#2c4250" fill-opacity="1.00"/>
+<path d="M116.200 42.800 L167.920 42.800" stroke="#000000" stroke-width="0.25" stroke-opacity="0.25" fill="none"/>
+<rect x="4.600" y="67.000" width="45.600" height="27.000" rx="1.00" fill="#ffffff" fill-opacity="0.18" stroke="#1d1b17" stroke-width="0.22" stroke-opacity="0.45"/>
+<rect x="4.600" y="67.000" width="45.600" height="4.000" rx="1.00" fill="#2c4250" fill-opacity="1.00"/>
+<rect x="4.600" y="69.800" width="45.600" height="1.200" rx="0.00" fill="#2c4250" fill-opacity="1.00"/>
+<path d="M4.800 71.000 L50.000 71.000" stroke="#000000" stroke-width="0.25" stroke-opacity="0.25" fill="none"/>
+<rect x="4.600" y="96.000" width="45.600" height="27.000" rx="1.00" fill="#ffffff" fill-opacity="0.18" stroke="#1d1b17" stroke-width="0.22" stroke-opacity="0.45"/>
+<rect x="4.600" y="96.000" width="45.600" height="4.000" rx="1.00" fill="#2c4250" fill-opacity="1.00"/>
+<rect x="4.600" y="98.800" width="45.600" height="1.200" rx="0.00" fill="#2c4250" fill-opacity="1.00"/>
+<path d="M4.800 100.000 L50.000 100.000" stroke="#000000" stroke-width="0.25" stroke-opacity="0.25" fill="none"/>
+<rect x="52.600" y="67.000" width="115.520" height="56.000" rx="1.00" fill="#ffffff" fill-opacity="0.18" stroke="#1d1b17" stroke-width="0.22" stroke-opacity="0.45"/>
+<rect x="52.600" y="67.000" width="115.520" height="4.000" rx="1.00" fill="#2c4250" fill-opacity="1.00"/>
+<rect x="52.600" y="69.800" width="115.520" height="1.200" rx="0.00" fill="#2c4250" fill-opacity="1.00"/>
+<path d="M52.800 71.000 L167.920 71.000" stroke="#000000" stroke-width="0.25" stroke-opacity="0.25" fill="none"/>
+<rect x="92.600" y="43.400" width="19.800" height="21.200" rx="0.80" fill="#1d1b17" fill-opacity="1.00"/>
+<rect x="113.400" y="72.000" width="53.200" height="50.400" rx="1.00" fill="#1d1b17" fill-opacity="1.00"/>
+<path d="M114.600 111.000 L165.400 111.000" stroke="#f1ead9" stroke-width="0.20" stroke-opacity="0.35" fill="none"/>
+<rect x="98.200" y="111.600" width="9.600" height="10.800" rx="0.80" fill="#1d1b17" fill-opacity="1.00"/>
+<path d="M54.000 111.000 L111.800 111.000" stroke="#1d1b17" stroke-width="0.20" stroke-opacity="0.45" fill="none"/>
+<path d="M28.600 101.400 L28.600 121.600" stroke="#1d1b17" stroke-width="0.20" stroke-opacity="0.30" fill="none"/>
+</svg>

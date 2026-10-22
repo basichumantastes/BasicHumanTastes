@@ -12,6 +12,7 @@ Modules for [VCV Rack 2](https://vcvrack.com), for playing live and building gen
 | **Lucienne** | 56 HP | Six analog-style cores tied in a ring, tuned by ear: they lock onto just intervals, cross-modulate into chaos, starve on a sagging power rail. Gates opened by an internal register, two resonant filters, a halo, and two asynchronous LFOs crossfaded across twelve destinations. Panel in French. |
 | **Gaston** | 36 HP | Master sequencer for drum voices: eight trigger lanes with per-step probability and four CV lanes, each with its own length (up to 64 steps), clock ratio and direction for polyrhythms. Built-in clock with swing, CDJ-style transport, pads with live recording, and a map of all twelve lanes. |
 | **Gastounet** | 20 HP | Gaston's pattern memory, attached to its left: 4 banks of 16 patterns, Korg-style write and copy, next and random, quantized launch (now, beat, bar, 2 or 4 bars, or when track 1 loops) with restart or legato, and a song made of pattern rows. |
+| **Louis** | 34 HP | A Krell generator, no sound: four self-cycling voices, each with trigger, gate, pitch and envelope outputs. Slow drifts, a replay memory, voices linked in a ring (chain, hush, echo), scales or free pitch, and notes that snap to a patched clock without latency. |
 
 Manuals (PDF): [all modules](docs/Basic-Human-Tastes-manuals.pdf) ·
 [Ernest](docs/Ernest-manual.pdf) · [Marcel](docs/Marcel-manual.pdf) · [Jules](docs/Jules-manual.pdf) · [Odette](docs/Odette-manual.pdf) ·
@@ -25,11 +26,12 @@ With the [Rack 2 SDK](https://vcvrack.com/manual/Building#Building-Rack-plugins)
 
 ## Tests and tools
 
-    make -C tests run                    # offline test benches (Jules, Odette, Colette, Lucienne, Gaston, Gastounet, Ernest), linked to the SDK's libRack
+    make -C tests run                    # offline test benches (Jules, Odette, Colette, Lucienne, Gaston, Gastounet, Ernest, Louis), linked to the SDK's libRack
     python3 tools/preview.py             # panel previews and label overlap check
     python3 tools/preview.py --clean     # clean panel renders for the manuals
     python3 tools/gaston_panel.py        # Gaston's panel, layout header and preview (--preview)
     python3 tools/gastounet_panel.py     # the same for Gastounet
+    python3 tools/louis_panel.py         # the same for Louis
     python3 docs/manuals.py              # rebuild the PDF manuals
 
 ## License

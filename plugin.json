@@ -108,6 +108,19 @@
         "Expander"
       ],
       "manualUrl": "https://github.com/basichumantastes/BasicHumanTastes/blob/main/docs/Gastounet-manual.pdf"
+    },
+    {
+      "slug": "Louis",
+      "name": "Louis",
+      "description": "Krell generator: four self-cycling voices with trigger, gate, pitch and envelope outputs, slow drifts, a replay memory, voices linked in a ring, optional quantization and clock snapping",
+      "tags": [
+        "Random",
+        "Sequencer",
+        "Envelope generator",
+        "Quantizer",
+        "Clock modulator",
+        "Polyphonic"
+      ]
     }
   ]
 }

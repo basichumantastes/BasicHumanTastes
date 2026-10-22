@@ -18,5 +18,5 @@ name and its own panel graphics.
 
 Bundled fonts keep their own license (SIL Open Font License 1.1), included next to them:
 
-- Michroma and DSEG14 in `res/fonts/`
-- IBM Plex Sans (manuals only) in `docs/fonts/`
+- Michroma, DSEG14 and IBM Plex Sans (Louis's panel) in `res/fonts/`
+- IBM Plex Sans (manuals) in `docs/fonts/`

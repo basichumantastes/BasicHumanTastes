@@ -16,3 +16,4 @@ extern Model* modelColette;
 extern Model* modelLucienne;
 extern Model* modelGaston;
 extern Model* modelGastounet;
+extern Model* modelLouis;
